@@ -1,23 +1,23 @@
 create or replace package  GetHZPY is
 
-  --»ñÈ¡ºº×ÖÆ´ÒôºÍÆ´ÒôÊ××ÖÄ¸µÄ¹¦ÄÜº¯Êı
---×÷Õß£ºdavid.liu
+  --è·å–æ±‰å­—æ‹¼éŸ³å’Œæ‹¼éŸ³é¦–å­—æ¯çš„åŠŸèƒ½å‡½æ•°
+--ä½œè€…ï¼šdavid.liu
 --email/msn: david2068@gmail.com
---ÈÕÆÚ£º2006-10-06 19:00--23:59
---select GetHzFullPY('ÖĞ»ªÈËÃñ¹²ºÍ¹ú') from dual;
---select GetHzPYCAP('ÖĞ»ªÈËÃñ¹²ºÍ¹ú') from dual;
+--æ—¥æœŸï¼š2006-10-06 19:00--23:59
+--select GetHzFullPY('ä¸­åäººæ°‘å…±å’Œå›½') from dual;
+--select GetHzPYCAP('ä¸­åäººæ°‘å…±å’Œå›½') from dual;
 
---º¯ÊıGetHzFullPY(string)ÓÃÓÚ»ñÈ¡ºº×Ö×Ö·û´®µÄÆ´Òô
---select GetHzFullPY('ÖĞ»ªÈËÃñ¹²ºÍ¹ú') from dual;
---·µ»Ø£ºZhongHuaRenMinGongHeGuo
+--å‡½æ•°GetHzFullPY(string)ç”¨äºè·å–æ±‰å­—å­—ç¬¦ä¸²çš„æ‹¼éŸ³
+--select GetHzFullPY('ä¸­åäººæ°‘å…±å’Œå›½') from dual;
+--è¿”å›ï¼šZhongHuaRenMinGongHeGuo
 
---º¯ÊıGetHzPYCAP(string)ÓÃÓÚ»ñÈ¡Æ´ÒôÊ××ÖÄ¸
---select GetHzPYCAP('ÖĞ»ªÈËÃñ¹²ºÍ¹ú') from dual;
---·µ»ØZHRMGHG
+--å‡½æ•°GetHzPYCAP(string)ç”¨äºè·å–æ‹¼éŸ³é¦–å­—æ¯
+--select GetHzPYCAP('ä¸­åäººæ°‘å…±å’Œå›½') from dual;
+--è¿”å›ZHRMGHG
 
   -- package Author  : ADMINISTRATOR
-  -- Created : 2006-10-8 ÉÏÎç 11:51:16
-  -- Purpose : »ñµÃºº×ÖÆ´Òô±àÂë
+  -- Created : 2006-10-8 ä¸Šåˆ 11:51:16
+  -- Purpose : è·å¾—æ±‰å­—æ‹¼éŸ³ç¼–ç 
   
   -- Public type declarations
   TYPE THZPY_LIST is VARRAY (526) OF  VARCHAR2(6);

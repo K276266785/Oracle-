@@ -7,7 +7,7 @@ CREATE OR REPLACE TYPE spell_code AS OBJECT
 -------------Create Table Type
 CREATE OR REPLACE TYPE t_spellcode AS TABLE OF spell_code;
 /
---------------×Öµäº¯Êı£º
+--------------å­—å…¸å‡½æ•°ï¼š
 create or replace function f_getSpellcode  return t_spellcode Pipelined
 is
 Begin
@@ -410,7 +410,7 @@ PIPE Row(spell_code('zuo', -10254));
 Return;
 end;
 /
---------------- ·µ»Øº¯Êı£¬ ¸Ãº¯Êı»áµ÷ÓÃÉÏÃæµÄ×Öµäº¯Êı
+--------------- è¿”å›å‡½æ•°ï¼Œ è¯¥å‡½æ•°ä¼šè°ƒç”¨ä¸Šé¢çš„å­—å…¸å‡½æ•°
 create or replace function f_getSpell(p_cnStr In varchar2,
                                       p_sign  In number Default Null)
   return varchar2 as
@@ -479,4 +479,4 @@ end;
 /
 
 
-select f_getspell('ÏÜÕş',1) from dual;
+select f_getspell('å®ªæ”¿',1) from dual;

@@ -1,4 +1,4 @@
---²é¿´Ëø±í½ø³ÌSQLÓï¾ä1£º 
+--æŸ¥çœ‹é”è¡¨è¿›ç¨‹SQLè¯­å¥1ï¼š 
 select sess.sid, 
     sess.serial#, 
     lo.oracle_username, 
@@ -10,11 +10,11 @@ select sess.sid,
     v$session sess 
 where ao.object_id = lo.object_id and lo.session_id = sess.sid; 
 
---²é¿´Ëø±í½ø³ÌSQLÓï¾ä2£º 
+--æŸ¥çœ‹é”è¡¨è¿›ç¨‹SQLè¯­å¥2ï¼š 
 select * from v$session t1, v$locked_object t2 where t1.sid = t2.SESSION_ID; 
 
---É±µôËø±í½ø³Ì£º 
---ÈçÓĞÓ›ä›„t±íÊ¾ÓĞlock£¬Ó›ä›ÏÂSIDºÍserial# £¬Œ¢Ó›ä›µÄIDÌæ“QÏÂÃæµÄ738,1429£¬¼´¿É½â³ıLOCK 
+--æ€æ‰é”è¡¨è¿›ç¨‹ï¼š 
+--å¦‚æœ‰è¨˜éŒ„å‰‡è¡¨ç¤ºæœ‰lockï¼Œè¨˜éŒ„ä¸‹SIDå’Œserial# ï¼Œå°‡è¨˜éŒ„çš„IDæ›¿æ›ä¸‹é¢çš„738,1429ï¼Œå³å¯è§£é™¤LOCK 
 alter system kill session '1854,38775'; 
 
 
@@ -26,18 +26,18 @@ select distinct('alter system kill session '''||sess.sid||','||
 where ao.object_id = lo.object_id and lo.session_id = sess.sid
 and object_name like '%BIRT%'; 
 
---ÎŞ·¨kill,ºóĞø´¦Àí,ÕÒ³ö½ø³Ìspid
+--æ— æ³•kill,åç»­å¤„ç†,æ‰¾å‡ºè¿›ç¨‹spid
 select spid, osuser, s.program
   from v$session s, v$process p
  where s.paddr = p.addr      
    and s.sid = 1854;
 --3296
 
---µÇÂ¼·şÎñÆ÷£º10.12.3.80
---½øÈëÄ¿Â¼:D:\app\oracle\product\11.2.0\dbhome_1\BIN 
+--ç™»å½•æœåŠ¡å™¨ï¼š10.12.3.80
+--è¿›å…¥ç›®å½•:D:\app\oracle\product\11.2.0\dbhome_1\BIN 
 orakill orcl 3296
 
---¶ÁĞ´×îÆµ·±µÄsql
+--è¯»å†™æœ€é¢‘ç¹çš„sql
 select *
 from (select v.sql_id,
 v.child_number,
@@ -49,14 +49,14 @@ rank() over(order by v.disk_reads desc) elapsed_rank
 from v$sql v) a
 where elapsed_rank <= 10;
 
-select /* ×îºÄ×ÊÔ´SQL */ round(t3.value/100,0)cpu_used_seconds,s.sid,t3.value perf_value,s.username,s.event,s.program,case when s.wait_time>0 then round(s.wait_time/100,0)else s.wait_time end wait_time_seconds,q.sql_text,q.sql_fulltext
+select /* æœ€è€—èµ„æºSQL */ round(t3.value/100,0)cpu_used_seconds,s.sid,t3.value perf_value,s.username,s.event,s.program,case when s.wait_time>0 then round(s.wait_time/100,0)else s.wait_time end wait_time_seconds,q.sql_text,q.sql_fulltext
 ,'ALTER SYSTEM KILL SESSION '''||s.sid||','||s.serial#||''';'kill_session_cmd
 from v$session s,v$process p,v$sqlarea q,
 (select t2.* from(select ss.sid,ss.value from v$sesstat ss,v$session se
-where ss.statistic# in(select statistic# from v$statname where name='CPU used by this session' /* ĞŞ¸Ä´Ë´¦µ÷Õû²éÑ¯µÄĞÔÄÜÀàĞÍ£ºCPUºÄÊ±'CPU used by this session'¡¢ÎïÀí×Ü¶Á'physical read total bytes'¡¢ÎïÀí×ÜĞ´'physical write bytes' */ )
+where ss.statistic# in(select statistic# from v$statname where name='CPU used by this session' /* ä¿®æ”¹æ­¤å¤„è°ƒæ•´æŸ¥è¯¢çš„æ€§èƒ½ç±»å‹ï¼šCPUè€—æ—¶'CPU used by this session'ã€ç‰©ç†æ€»è¯»'physical read total bytes'ã€ç‰©ç†æ€»å†™'physical write bytes' */ )
 and se.sid=ss.sid and se.user#>0 and se.username not in('DBSNMP','SYSMAN')and se.program is null and exists(select 1 from v$sqlarea t1 where t1.address=se.sql_address)
 order by ss.value desc)t2
-where rownum <=10 /* ĞŞ¸Ä´Ë´¦µ÷Õû·µ»ØµÄsessionÊıÁ¿ */
+where rownum <=10 /* ä¿®æ”¹æ­¤å¤„è°ƒæ•´è¿”å›çš„sessionæ•°é‡ */
 )t3
 where s.paddr=p.addr and s.sql_address=q.address and s.sid=t3.sid
 order by cpu_used_seconds desc,s.sid;

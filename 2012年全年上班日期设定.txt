@@ -1,4 +1,4 @@
---2012ÄêÈ«ÄêÉÏ°àÈÕÆÚÉè¶¨
+--2012å¹´å…¨å¹´ä¸Šç­æ—¥æœŸè®¾å®š
 SELECT f_get_year(tc_tx_date) AS tc_year,
        f_get_month(tc_tx_date) AS tc_month,
        tc_weekday,
@@ -10,7 +10,7 @@ SELECT f_get_year(tc_tx_date) AS tc_year,
                    tc_date BETWEEN '2012-06-22' AND '2012-06-24' OR
                    tc_date BETWEEN '2012-09-30' AND '2012-10-07' ) THEN 0 ELSE
          (CASE WHEN tc_date IN ('2012-01-21','2012-01-29','2012-03-31','2012-04-01','2012-04-28','2012-09-29') THEN 1 ELSE 
-           (CASE WHEN tc_weekday='ĞÇÆÚÁù' OR tc_weekday='ĞÇÆÚÈÕ' THEN 0 ELSE 1 END)END)END) AS tc_status FROM
+           (CASE WHEN tc_weekday='æ˜ŸæœŸå…­' OR tc_weekday='æ˜ŸæœŸæ—¥' THEN 0 ELSE 1 END)END)END) AS tc_status FROM
          (SELECT tc_tx_date,
                  to_char(tc_tx_date,'yyyy-mm-dd') AS tc_date,
                  f_get_date_weekday(tc_tx_date) AS tc_weekday FROM

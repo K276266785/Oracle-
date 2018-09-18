@@ -1,10 +1,10 @@
 (Ext.get\('paramsMap_storeRowidArray.*?\).dom.value='all)';(Ext.get\('paramsMap_storeRowidArray[^\)]+'\).dom.value='all)';
 
 
-ÕıÔò±í´ïÊ½ÁĞ×ªĞĞ
+æ­£åˆ™è¡¨è¾¾å¼åˆ—è½¬è¡Œ
 SELECT regexp_substr('1101,Yokohama,Japan,1.5.105', '[^,]+', 1, LEVEL) AS output FROM dual 
 CONNECT BY LEVEL <= length('1101,Yokohama,Japan,1.5.105') - length(REPLACE('1101,Yokohama,Japan,1.5.105', ',')) + 1; 
 
---²éÕÒCx-µÄÕÊºÅ
+--æŸ¥æ‰¾Cx-çš„å¸å·
 select * from tb_user_info_0a
 where regexp_like(tc_code,'C[[:digit:]]-+');

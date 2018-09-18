@@ -8,7 +8,7 @@ create or replace type Type_Row_Test as object
 create or replace type Type_Table_Test  as table of Type_Row_Test;    
 
 create or replace FUNCTION F_Test(pIdIn varchar2) return Type_Table_Test
-  pipelined --¹ÜµÀ  
+  pipelined --ç®¡é“  
  as
   v Type_Row_Test;
 begin

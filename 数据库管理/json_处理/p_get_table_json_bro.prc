@@ -3,8 +3,8 @@ create or replace procedure p_get_table_json_bro(a_id      number,
 
   /*
   --kai 2018-07-01
-  --Ä£¿é¹¦ÄÜ:Í¨ÓÃtable½á¹û×ª--jsonÊı×é
-  --×¢:Ö»Ö§³Öµ¥¸öid½á¹û×ª»»
+  --æ¨¡å—åŠŸèƒ½:é€šç”¨tableç»“æœè½¬--jsonæ•°ç»„
+  --æ³¨:åªæ”¯æŒå•ä¸ªidç»“æœè½¬æ¢
   */
   v_sql                        varchar2(30000);
   v_msg_hd                     varchar2(10000);
@@ -39,7 +39,7 @@ begin
      where upper(tc_table_type) = 'DT';
         
   if a_id=0 then
-    raise_application_error(-20000, 'Ôİ²»Ö§³Öhd¶à¼ÇÂ¼£¡');
+    raise_application_error(-20000, 'æš‚ä¸æ”¯æŒhdå¤šè®°å½•ï¼');
     
     v_sql := 'select count(1) from '||v_table_hd_name;
     execute immediate v_sql into v_hd_rownum;
@@ -62,7 +62,7 @@ begin
       v_id := a_id;
     end if;
     
-    --È¡hd½á¹ûjson
+    --å–hdç»“æœjson
     v_sql := 'select wm_concat(''"''||tc_column_name||''":"''||tc_value||''"'') from tmpp_table_key_value_0a
                where tc_table_name = '''||v_table_hd_name||''' and
                      tc_id = '||v_id;
@@ -90,7 +90,7 @@ begin
           
           v_msg_dt_result := '';
           for j in 1..v_dt_rownum loop
-            --È¡dt½á¹ûjson
+            --å–dtç»“æœjson
             v_sql := 'select ''{''||wm_concat(''"''||tc_column_name||''":"''||tc_value||''"'')||''}'' from tmpp_table_key_value_0a
                              where tc_table_name = '''||v_table_dt_name||''' and
                                    tc_id = '||v_id||' and
@@ -109,7 +109,7 @@ begin
           if v_table_dt_num<v_table_dt_qty then
             v_msg2 := v_msg2||',';
           end if;    
-          --ĞòºÅ+1
+          --åºå·+1
           v_table_dt_num := v_table_dt_num+1;           
         end if;
       end loop;      
@@ -127,7 +127,7 @@ begin
     end if;
   end loop;
 
-  --×îÖÕ½á¹û
+  --æœ€ç»ˆç»“æœ
   v_msg := '{"'||v_json_hd_name||'":'||v_msg||'}';
 
   a_out_msg := v_msg;

@@ -1,4 +1,4 @@
---¼ì²éÊı¾İ¿â±í¿Õ¼äÕ¼ÓÃ¿Õ¼äÇé¿ö:
+--æ£€æŸ¥æ•°æ®åº“è¡¨ç©ºé—´å ç”¨ç©ºé—´æƒ…å†µ:
  select tablespace_name, sum(bytes) / 1024 / 1024 / 1024 GB
    from dba_data_files
   group by tablespace_name
@@ -8,28 +8,28 @@
   group by tablespace_name
   order by GB;
   
-  --1.È·ÈÏÎÄ¼şÎ»ÖÃ
+  --1.ç¡®è®¤æ–‡ä»¶ä½ç½®
   select file_name,bytes/1024/1024 from dba_data_files where tablespace_name like 'UNDOTBS1';
   
-  --2.¼ì²éUNDO Segment×´Ì¬
+  --2.æ£€æŸ¥UNDO SegmentçŠ¶æ€
   select usn,xacts,rssize/1024/1024/1024,hwmsize/1024/1024/1024,shrinks from v$rollstat order by rssize;
   
-  --3.´´½¨ĞÂµÄUNDO±í¿Õ¼ä
+  --3.åˆ›å»ºæ–°çš„UNDOè¡¨ç©ºé—´
   create undo tablespace undotbs2 ;
   
-  --4.ÇĞ»»UNDO±í¿Õ¼äÎªĞÂµÄUNDO±í¿Õ¼ä
-  --´´½¨ÁËĞÂµÄUNDO±í¿Õ¼äÒÔºó£¬Èç¹û²»ÖªµÀÏµÍ³Ê¹ÓÃµÄÊÇpfile»¹ÊÇspfileÎÄ¼ş£¬Ó¦Ê¹ÓÃ²ÎÊıboth,»áÍ¬Ê±ĞŞ¸ÄspfileÎÄ¼ş£¬±ÜÃâ³öÏÖ³åÍ»¡£
+  --4.åˆ‡æ¢UNDOè¡¨ç©ºé—´ä¸ºæ–°çš„UNDOè¡¨ç©ºé—´
+  --åˆ›å»ºäº†æ–°çš„UNDOè¡¨ç©ºé—´ä»¥åï¼Œå¦‚æœä¸çŸ¥é“ç³»ç»Ÿä½¿ç”¨çš„æ˜¯pfileè¿˜æ˜¯spfileæ–‡ä»¶ï¼Œåº”ä½¿ç”¨å‚æ•°both,ä¼šåŒæ—¶ä¿®æ”¹spfileæ–‡ä»¶ï¼Œé¿å…å‡ºç°å†²çªã€‚
   alter system set undo_tablespace=undotbs2 scope=both;
   
-  --5.µÈ´ıÔ­UNDO±í¿Õ¼äËùÓĞUNDO SEGMENT OFFLINE 
+  --5.ç­‰å¾…åŸUNDOè¡¨ç©ºé—´æ‰€æœ‰UNDO SEGMENT OFFLINE 
   select usn,xacts,status,rssize/1024/1024/1024,hwmsize/1024/1024/1024,shrinks from v$rollstat order by rssize;
   
-  --6.É¾³ıÔ­UNDO±í¿Õ¼ä
-  --£¨±¾ÈË¾­²âÊÔ¾õµÃÆäÊµÊÇ·ñ¿ÉÒÔÓÃdrop tablespace undotbs1 including contents and datafiles;Ö±½ÓÁ¬Ó²ÅÌÀïÃæµÄdbfÎÄ¼ş¼şÒ»ÆğÉ¾³ı£©
+  --6.åˆ é™¤åŸUNDOè¡¨ç©ºé—´
+  --ï¼ˆæœ¬äººç»æµ‹è¯•è§‰å¾—å…¶å®æ˜¯å¦å¯ä»¥ç”¨drop tablespace undotbs1 including contents and datafiles;ç›´æ¥è¿ç¡¬ç›˜é‡Œé¢çš„dbfæ–‡ä»¶ä»¶ä¸€èµ·åˆ é™¤ï¼‰
   drop tablespace undotbs1 including contents;
   
-  --7.¼ì²é¿Õ¼äÇé¿ö
-  --ÓÉÓÚÎÒÊ¹ÓÃµÄASM¹ÜÀí,¿ÉÒÔÊ¹ÓÃ10gR2Ìá¹©µÄĞÅ¹¤¾ßasmcmdÀ´²ì¿´¿Õ¼äÕ¼ÓÃÇé¿ö.
+  --7.æ£€æŸ¥ç©ºé—´æƒ…å†µ
+  --ç”±äºæˆ‘ä½¿ç”¨çš„ASMç®¡ç†,å¯ä»¥ä½¿ç”¨10gR2æä¾›çš„ä¿¡å·¥å…·asmcmdæ¥å¯Ÿçœ‹ç©ºé—´å ç”¨æƒ…å†µ.
   /*[oracle@danaly ~]$ export ORACLE_SID=+ASM
   [oracle@danaly ~]$ asmcmd
   ASMCMD> du 

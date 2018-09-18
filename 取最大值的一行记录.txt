@@ -14,7 +14,7 @@ INSERT INTO kai_test4(tc_num,tc_code) VALUES(1001,'aaa6');
 SELECT t1.* FROM kai_test4 T1  
 WHERE T1.tc_num >= ALL(SELECT t2.tc_num FROM kai_test4 T2);
 
---·Ö×éÈ¡×î´óÖµ
+--åˆ†ç»„å–æœ€å¤§å€¼
 DROP TABLE kai_test4;
 
 CREATE TABLE kai_test4(tc_num NUMBER,
@@ -31,10 +31,10 @@ INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(1008,'aaa7','c');
 INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(1013,'aaa8','c');    
 INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(1012,'aaa9','c');   
 
---·½Ê½1
+--æ–¹å¼1
 select * from kai_test4 t where not exists(select 1 from kai_test4 where tc_group=t.tc_group and tc_num>t.tc_num) 
 
---·½Ê½2(Ğ§ÂÊ×î¿ì)
+--æ–¹å¼2(æ•ˆç‡æœ€å¿«)
 select * from 
 (select t.*,row_number() over(PARTITION by tc_group order by tc_num desc) as num from kai_test4 t) tt where tt.num = 1 
 order by tc_group;       

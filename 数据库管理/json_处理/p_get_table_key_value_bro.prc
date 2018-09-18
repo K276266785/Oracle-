@@ -2,10 +2,10 @@ create or replace procedure p_get_table_key_value_bro(a_id       in number,
                                                       a_in_table in varchar2) is
   /*
     --kai 2018-07-02
-    --Ä£¿é¹¦ÄÜ:tableËùÓĞÁĞ×ª»»Îªkey_value·½Ê½
-    --²ÎÊıËµÃ÷
-    --a_id       -- Êı¾İ±íidÖµ(0=È¡ËùÓĞ¼ÇÂ¼)
-    --a_in_table -- ´ı×ª»»µÄÊı¾İ±íÃû
+    --æ¨¡å—åŠŸèƒ½:tableæ‰€æœ‰åˆ—è½¬æ¢ä¸ºkey_valueæ–¹å¼
+    --å‚æ•°è¯´æ˜
+    --a_id       -- æ•°æ®è¡¨idå€¼(0=å–æ‰€æœ‰è®°å½•)
+    --a_in_table -- å¾…è½¬æ¢çš„æ•°æ®è¡¨å
   */     
   v_sql           VARCHAR2(3000);
   v_table_type    varchar2(10);
@@ -41,18 +41,18 @@ begin
       v_sql := 'select * from '||a_in_table||' where id='||a_id;
     end if;
     
-    --Ä¬ÈÏĞĞºÅÖµ
+    --é»˜è®¤è¡Œå·å€¼
     v_rownum := 1;
     
-    -- ´ò¿ª¹â±ê
+    -- æ‰“å¼€å…‰æ ‡
     OPEN cursrc FOR v_sql;
-    -- ´Ó±¾µØ¶¯Ì¬SQL×ª»»ÎªDBMS_SQL
+    -- ä»æœ¬åœ°åŠ¨æ€SQLè½¬æ¢ä¸ºDBMS_SQL
     v_curid  := dbms_sql.to_cursor_number(cursrc);    
-    --»ñÈ¡ÓÎ±êÀïÃæµÄÊı¾İÁĞÏîÊıºÍÃ¿¸öÊı¾İÁĞµÄÊôĞÔ£¬±ÈÈçÁĞÃû£¬ÀàĞÍ£¬³¤¶ÈµÈ
+    --è·å–æ¸¸æ ‡é‡Œé¢çš„æ•°æ®åˆ—é¡¹æ•°å’Œæ¯ä¸ªæ•°æ®åˆ—çš„å±æ€§ï¼Œæ¯”å¦‚åˆ—åï¼Œç±»å‹ï¼Œé•¿åº¦ç­‰
     dbms_sql.describe_columns(v_curid, v_colcnt, v_desctab);
-    -- ¶¨ÒåÁĞ
+    -- å®šä¹‰åˆ—
     FOR i IN 1 .. v_colcnt LOOP
-      --´Ë´¦ÊÇ¶¨ÒåÓÎ±êÖĞÁĞµÄ¶ÁÈ¡ÀàĞÍ£¬¿ÉÒÔ¶¨ÒåÎª×Ö·û£¬Êı×ÖºÍÈÕÆÚÀàĞÍ£¬
+      --æ­¤å¤„æ˜¯å®šä¹‰æ¸¸æ ‡ä¸­åˆ—çš„è¯»å–ç±»å‹ï¼Œå¯ä»¥å®šä¹‰ä¸ºå­—ç¬¦ï¼Œæ•°å­—å’Œæ—¥æœŸç±»å‹ï¼Œ
       IF v_desctab(i).col_type = 2 THEN
         dbms_sql.define_column(v_curid, i, v_vnum);
       ELSIF v_desctab(i).col_type = 12 THEN
@@ -61,17 +61,17 @@ begin
         dbms_sql.define_column(v_curid, i, v_vname, 50);
       END IF;    
     END LOOP;
-    -- DBMS_SQL°ü»ñÈ¡ĞĞ
-    --´ÓÓÎ±êÖĞ°ÑÊı¾İ¼ìË÷µ½»º´æÇø£¨BUFFER£©ÖĞ£¬»º³åÇø µÄÖµÖ»ÄÜ±»º¯ÊıCOULUMN_VALUE()Ëù¶ÁÈ¡
+    -- DBMS_SQLåŒ…è·å–è¡Œ
+    --ä»æ¸¸æ ‡ä¸­æŠŠæ•°æ®æ£€ç´¢åˆ°ç¼“å­˜åŒºï¼ˆBUFFERï¼‰ä¸­ï¼Œç¼“å†²åŒº çš„å€¼åªèƒ½è¢«å‡½æ•°COULUMN_VALUE()æ‰€è¯»å–
     WHILE dbms_sql.fetch_rows(v_curid) > 0 LOOP
       
       FOR i IN 1 .. v_colcnt LOOP
-        --È¡ĞĞ¼ÇÂ¼idÖµ
+        --å–è¡Œè®°å½•idå€¼
         if v_desctab(i).col_name = 'ID' then
           dbms_sql.column_value(v_curid, i, v_new_id);
         end if;
         
-        --ÖØĞÂ¸üĞÂĞĞºÅ
+        --é‡æ–°æ›´æ–°è¡Œå·
         if v_table_type='DT' and v_rownum>1 and v_new_id<>v_old_id then
           v_rownum := 1;
         end if;
@@ -100,7 +100,7 @@ begin
         END IF;
       END LOOP;
       
-      --¸üĞÂĞĞºÅ
+      --æ›´æ–°è¡Œå·
       v_old_id := v_new_id;
       v_rownum := v_rownum + 1;
     END LOOP;

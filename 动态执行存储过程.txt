@@ -1,46 +1,46 @@
-ÈçºÎ¶¯Ì¬Ö´ĞĞ´æ´¢¹ı³Ì»òº¯Êı(×ª)Ä¿Ç°ÔÚOracleÊı¾İ¿â´æ´¢¹ı³ÌÑĞ·¢¹ı³ÌÖĞ£¬Óöµ½ĞèÒª´ÓÄ³ÕÅ±íÖĞ¶ÁÈ¡´æ´¢¹ı³ÌÃû²¢½øĞĞ¶¯Ì¬Ö´ĞĞµÄÇé¿ö£¬¾­²éÕÒ×ÊÁÏ£¬ÖÆ×÷³ÉDEMO£¬²¢Í¨¹ı²âÊÔ£¬ÏÖ¹²ÏíÏÂ£¬ÒÔ±¸ÆäËûÍ¬ÊÂÓöµ½´ËÖÖÇé¿öÊ±²Î¿¼¡£
+å¦‚ä½•åŠ¨æ€æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹æˆ–å‡½æ•°(è½¬)ç›®å‰åœ¨Oracleæ•°æ®åº“å­˜å‚¨è¿‡ç¨‹ç ”å‘è¿‡ç¨‹ä¸­ï¼Œé‡åˆ°éœ€è¦ä»æŸå¼ è¡¨ä¸­è¯»å–å­˜å‚¨è¿‡ç¨‹åå¹¶è¿›è¡ŒåŠ¨æ€æ‰§è¡Œçš„æƒ…å†µï¼Œç»æŸ¥æ‰¾èµ„æ–™ï¼Œåˆ¶ä½œæˆDEMOï¼Œå¹¶é€šè¿‡æµ‹è¯•ï¼Œç°å…±äº«ä¸‹ï¼Œä»¥å¤‡å…¶ä»–åŒäº‹é‡åˆ°æ­¤ç§æƒ…å†µæ—¶å‚è€ƒã€‚
 
  
 
-/*¶¯Ì¬Ö´ĞĞ´æ´¢¹ı³ÌDEMO*/
+/*åŠ¨æ€æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹DEMO*/
 
 DECLARE
 
- v_Procedure_Name   VARCHAR2(320); --´æ´¢¹ı³ÌÃû
+ v_Procedure_Name   VARCHAR2(320); --å­˜å‚¨è¿‡ç¨‹å
 
- v_Input_Parameter1 VARCHAR2(320); --´«Èë²ÎÊı1
+ v_Input_Parameter1 VARCHAR2(320); --ä¼ å…¥å‚æ•°1
 
- v_Input_Parameter2 VARCHAR2(320); --´«Èë²ÎÊı2
+ v_Input_Parameter2 VARCHAR2(320); --ä¼ å…¥å‚æ•°2
 
- v_Return_Int       INTEGER; --½ÓÊÕ·µ»ØÖµ
+ v_Return_Int       INTEGER; --æ¥æ”¶è¿”å›å€¼
 
- v_Return_String    VARCHAR2(320); --½ÓÊÕ·µ»ØÖµ 
+ v_Return_String    VARCHAR2(320); --æ¥æ”¶è¿”å›å€¼ 
 
- v_Sql_Str          VARCHAR2(320); --¶¯Ì¬Ö´ĞĞSQLÓï¾ä
+ v_Sql_Str          VARCHAR2(320); --åŠ¨æ€æ‰§è¡ŒSQLè¯­å¥
 
 BEGIN
 
- /*»ñÈ¡´æ´¢¹ı³ÌÃû£¬¿ÉÒÔ´ÓÊı¾İ¿âÖĞ¶¯Ì¬¶ÁÈ¡ĞèÒªÖ´ĞĞµÄ´æ´¢¹ı³Ì£¬±¾DEMOÖ±½Ó¸³Öµ*/
+ /*è·å–å­˜å‚¨è¿‡ç¨‹åï¼Œå¯ä»¥ä»æ•°æ®åº“ä¸­åŠ¨æ€è¯»å–éœ€è¦æ‰§è¡Œçš„å­˜å‚¨è¿‡ç¨‹ï¼Œæœ¬DEMOç›´æ¥èµ‹å€¼*/
 
  v_Procedure_Name := 'Wms_Application_Out_p.Application_Out_List_Refuse(:i_Str1,:i_Str2,:o_Return_Int,:o_Return_String)';
 
- /*±¾DEMO¼Ù¶¨ĞèÒªµ÷ÓÃµÄ´æ´¢¹ı³ÌÓĞÁ½¸ö´«Èë²ÎÊıºÍÁ½¸ö´«³ö²ÎÊı*/
+ /*æœ¬DEMOå‡å®šéœ€è¦è°ƒç”¨çš„å­˜å‚¨è¿‡ç¨‹æœ‰ä¸¤ä¸ªä¼ å…¥å‚æ•°å’Œä¸¤ä¸ªä¼ å‡ºå‚æ•°*/
 
- v_Input_Parameter1 := 'test01'; --´«Èë²ÎÊı1,ÔÚÊµ¼ÊÓ¦ÓÃÖĞ¸ù¾İ¾ßÌåÇé¿ö»úĞÍ¸³Öµ
+ v_Input_Parameter1 := 'test01'; --ä¼ å…¥å‚æ•°1,åœ¨å®é™…åº”ç”¨ä¸­æ ¹æ®å…·ä½“æƒ…å†µæœºå‹èµ‹å€¼
 
- v_Input_Parameter2 := 'test01'; --´«Èë²ÎÊı2,ÔÚÊµ¼ÊÓ¦ÓÃÖĞ¸ù¾İ¾ßÌåÇé¿ö»úĞÍ¸³Öµ
+ v_Input_Parameter2 := 'test01'; --ä¼ å…¥å‚æ•°2,åœ¨å®é™…åº”ç”¨ä¸­æ ¹æ®å…·ä½“æƒ…å†µæœºå‹èµ‹å€¼
 
- /*¶¯Ì¬Éú³ÉĞèÒªÖ´ĞĞ´æ´¢¹ı³ÌµÄSQLÓï¾ä*/
+ /*åŠ¨æ€ç”Ÿæˆéœ€è¦æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹çš„SQLè¯­å¥*/
 
  v_Sql_Str := 'BEGIN ' || v_Procedure_Name || '; END;';
 
- /*Ö´ĞĞ¸ÃSQLÓï¾ä*/
+ /*æ‰§è¡Œè¯¥SQLè¯­å¥*/
 
  EXECUTE IMMEDIATE v_Sql_Str
 
-    USING IN v_Input_Parameter1, IN v_Input_Parameter2, OUT v_Return_Int, OUT v_Return_String; --²ÎÊıÀàĞÍºÍ´«µİË³Ğò±ØĞëÓë´æ´¢¹ı³ÌÖĞµÄ±£³ÖÒ»ÖÂ
+    USING IN v_Input_Parameter1, IN v_Input_Parameter2, OUT v_Return_Int, OUT v_Return_String; --å‚æ•°ç±»å‹å’Œä¼ é€’é¡ºåºå¿…é¡»ä¸å­˜å‚¨è¿‡ç¨‹ä¸­çš„ä¿æŒä¸€è‡´
 
- /*Êä³ö·µ»ØÖµ*/
+ /*è¾“å‡ºè¿”å›å€¼*/
 
  Dbms_Output.Put_Line(v_Return_Int || v_Return_String);
 
@@ -48,39 +48,39 @@ END;
 
  
 
-/*¶¯Ì¬Ö´ĞĞº¯ÊıDEMO*/
+/*åŠ¨æ€æ‰§è¡Œå‡½æ•°DEMO*/
 
 DECLARE
 
- v_Function_Name    VARCHAR2(320); --º¯ÊıÃû
+ v_Function_Name    VARCHAR2(320); --å‡½æ•°å
 
- v_Input_Parameter1 VARCHAR2(320); --´«Èë²ÎÊı1
+ v_Input_Parameter1 VARCHAR2(320); --ä¼ å…¥å‚æ•°1
 
- v_Return_String    VARCHAR2(320); --½ÓÊÕ·µ»ØÖµ 
+ v_Return_String    VARCHAR2(320); --æ¥æ”¶è¿”å›å€¼ 
 
- v_Sql_Str          VARCHAR2(320); --¶¯Ì¬Ö´ĞĞSQLÓï¾ä
+ v_Sql_Str          VARCHAR2(320); --åŠ¨æ€æ‰§è¡ŒSQLè¯­å¥
 
 BEGIN
 
- /*»ñÈ¡º¯ÊıÃû£¬¿ÉÒÔ´ÓÊı¾İ¿âÖĞ¶¯Ì¬¶ÁÈ¡ĞèÒªÖ´ĞĞµÄº¯Êı£¬±¾DEMOÖ±½Ó¸³Öµ*/
+ /*è·å–å‡½æ•°åï¼Œå¯ä»¥ä»æ•°æ®åº“ä¸­åŠ¨æ€è¯»å–éœ€è¦æ‰§è¡Œçš„å‡½æ•°ï¼Œæœ¬DEMOç›´æ¥èµ‹å€¼*/
 
  v_Function_Name := 'Return_Str_f(:i_Str1)';
 
- /*±¾DEMO¼Ù¶¨ĞèÒªµ÷ÓÃµÄº¯ÊıÓĞ1¸ö´«Èë²ÎÊı*/
+ /*æœ¬DEMOå‡å®šéœ€è¦è°ƒç”¨çš„å‡½æ•°æœ‰1ä¸ªä¼ å…¥å‚æ•°*/
 
- v_Input_Parameter1 := 'test01'; --´«Èë²ÎÊı1,ÔÚÊµ¼ÊÓ¦ÓÃÖĞ¸ù¾İ¾ßÌåÇé¿ö»úĞÍ¸³Öµ
+ v_Input_Parameter1 := 'test01'; --ä¼ å…¥å‚æ•°1,åœ¨å®é™…åº”ç”¨ä¸­æ ¹æ®å…·ä½“æƒ…å†µæœºå‹èµ‹å€¼
 
- /*¶¯Ì¬Éú³ÉĞèÒªÖ´ĞĞº¯ÊıµÄSQLÓï¾ä*/
+ /*åŠ¨æ€ç”Ÿæˆéœ€è¦æ‰§è¡Œå‡½æ•°çš„SQLè¯­å¥*/
 
  v_Sql_Str := 'begin :v_Return_String := ' || v_Function_Name || '; end;';
 
- /*Ö´ĞĞ¸ÃSQLÓï¾ä*/
+ /*æ‰§è¡Œè¯¥SQLè¯­å¥*/
 
  EXECUTE IMMEDIATE v_Sql_Str
 
-    USING OUT v_Return_String, IN v_Input_Parameter1; --½ÓÊÕ·µ»ØÖµ±ØĞëÔÚÇ°£¬´«Èë²ÎÊıÀàĞÍºÍ´«µİË³Ğò±ØĞëÓëº¯ÊıÖĞ±£³ÖÒ»ÖÂ
+    USING OUT v_Return_String, IN v_Input_Parameter1; --æ¥æ”¶è¿”å›å€¼å¿…é¡»åœ¨å‰ï¼Œä¼ å…¥å‚æ•°ç±»å‹å’Œä¼ é€’é¡ºåºå¿…é¡»ä¸å‡½æ•°ä¸­ä¿æŒä¸€è‡´
 
- /*Êä³ö·µ»ØÖµ*/
+ /*è¾“å‡ºè¿”å›å€¼*/
 
  Dbms_Output.Put_Line(v_Return_String);
 
@@ -88,7 +88,7 @@ END;
 
  
 
-/*Ëùµ÷ÓÃº¯Êı*/
+/*æ‰€è°ƒç”¨å‡½æ•°*/
 
 CREATE OR REPLACE FUNCTION Return_Str_f(i_Str1 VARCHAR2) RETURN VARCHAR2 IS
 
@@ -98,15 +98,15 @@ CREATE OR REPLACE FUNCTION Return_Str_f(i_Str1 VARCHAR2) RETURN VARCHAR2 IS
 
 BEGIN
 
- /*Éú³É¶¯Ì¬Ö´ĞĞSQL*/
+ /*ç”ŸæˆåŠ¨æ€æ‰§è¡ŒSQL*/
 
  v_Sql_Str := 'SELECT ''' || i_Str1 || ''' FROM DUAL';
 
  EXECUTE IMMEDIATE v_Sql_Str
 
-    INTO v_Str1; --½ÓÊÕ·µ»ØÖµ
+    INTO v_Str1; --æ¥æ”¶è¿”å›å€¼
 
- /*Êä³ö·µ»Ø½á¹û*/
+ /*è¾“å‡ºè¿”å›ç»“æœ*/
 
  Dbms_Output.Put_Line('v_str1=' || v_Str1);
 
@@ -118,85 +118,85 @@ END;
 
  
 
-Ïà¹Ø×ÊÁÏ£º
+ç›¸å…³èµ„æ–™ï¼š
 
-Oracle PL/SQLÖĞ¶¯Ì¬Ö´ĞĞSQL EXECUTE IMMEDIATE
+Oracle PL/SQLä¸­åŠ¨æ€æ‰§è¡ŒSQL EXECUTE IMMEDIATE
 
- ÔÚplsqlÖĞ¾­³£Óöµ½sqlÓï¾äÊÇÔÚ¹ı³ÌÖĞ¶¯Ì¬Éú³ÉµÄ£¬Õâ¸öÊ±ºò¿ÉÒÔÓÃEXECUTE IMMEDIATEÀ´Ö´ĞĞÉú³ÉµÄsqlÓï¾ä¡£×ªÒ»¸öjavaeye£¨Ã²ËÆËûÒ²ÊÇ×ªµÄ£¬ÕÒ²»µ½³ö´¦£©ÉÏµÄEXECUTE IMMEDIATEÓÃ·¨¡£
+ åœ¨plsqlä¸­ç»å¸¸é‡åˆ°sqlè¯­å¥æ˜¯åœ¨è¿‡ç¨‹ä¸­åŠ¨æ€ç”Ÿæˆçš„ï¼Œè¿™ä¸ªæ—¶å€™å¯ä»¥ç”¨EXECUTE IMMEDIATEæ¥æ‰§è¡Œç”Ÿæˆçš„sqlè¯­å¥ã€‚è½¬ä¸€ä¸ªjavaeyeï¼ˆè²Œä¼¼ä»–ä¹Ÿæ˜¯è½¬çš„ï¼Œæ‰¾ä¸åˆ°å‡ºå¤„ï¼‰ä¸Šçš„EXECUTE IMMEDIATEç”¨æ³•ã€‚
 
-    EXECUTE IMMEDIATE´úÌæÁËÒÔÇ°Oracle8iÖĞDBMS_SQL package°ü.Ëü½âÎö²¢ÂíÉÏÖ´ĞĞ¶¯Ì¬µÄSQLÓï¾ä»ò·ÇÔËĞĞÊ±´´½¨µÄPL/SQL¿é.¶¯Ì¬´´½¨ºÍÖ´ĞĞSQLÓï¾äĞÔÄÜ³¬Ç°£¬EXECUTE IMMEDIATEµÄÄ¿±êÔÚÓÚ¼õĞ¡ÆóÒµ·ÑÓÃ²¢»ñµÃ½Ï¸ßµÄĞÔÄÜ£¬½ÏÖ®ÒÔÇ°ËüÏàµ±ÇáÒ×±àÂë.¾¡¹ÜDBMS_SQLÈÔÈ»¿ÉÓÃ£¬
-    µ«ÊÇÍÆ¼öÊ¹ÓÃEXECUTE IMMEDIATE,ÒòÎªËü»ñµÄÊÕÒæÔÚ°üÖ®ÉÏ¡£
-¡¡¡¡Ê¹ÓÃ¼¼ÇÉ
-¡¡¡¡1. EXECUTE IMMEDIATE½«²»»áÌá½»Ò»¸öDMLÊÂÎñÖ´ĞĞ£¬Ó¦¸ÃÏÔÊ½Ìá½»
-¡¡¡¡¼ÙÈçÍ¨¹ıEXECUTE IMMEDIATE´¦ÀíDMLÃüÁî£¬ÄÇÃ´ÔÚÍê³ÉÒÔÇ°ĞèÒªÏÔÊ½Ìá½»»òÕß×÷ÎªEXECUTE IMMEDIATE×Ô¼ºµÄÒ»²¿·Ö. ¼ÙÈçÍ¨¹ıEXECUTE IMMEDIATE´¦ÀíDDLÃüÁî,ËüÌá½»ËùÓĞÒÔÇ°¸Ä±äµÄÊı¾İ
-¡¡¡¡2. ²»Ö§³Ö·µ»Ø¶àĞĞµÄ²éÑ¯,ÕâÖÖ½»»¥½«ÓÃÁÙÊ±±íÀ´´æ´¢¼ÇÂ¼(²ÎÕÕÀı×ÓÈçÏÂ)»òÕßÓÃREF cursors.
-¡¡¡¡3. µ±Ö´ĞĞSQLÓï¾äÊ±£¬²»ÒªÓÃ·ÖºÅ£¬µ±Ö´ĞĞPL/SQL¿éÊ±£¬ÔÚÆäÎ²²¿ÓÃ·ÖºÅ.
-¡¡¡¡4. ÔÚOracleÊÖ²áÖĞ£¬Î´¾ßÌå¸²¸ÇÕâĞ©¹¦ÄÜ¡£ÏÂÃæµÄÀı×ÓÕ¹Ê¾ÁËËùÓĞÓÃµ½Execute immediateµÄ¿ÉÄÜ·½Ãæ.Ï£ÍûÄÜ¸øÄã´øÀ´·½±ã.
-¡¡¡¡5. ¶ÔÓÚForms¿ª·¢Õß,µ±ÔÚPL/SQL 8.0.6.3.°æ±¾ÖĞ£¬Forms 6i²»ÄÜÊ¹ÓÃ´Ë¹¦ÄÜ.
-¡¡¡¡EXECUTE IMMEDIATEÓÃ·¨Àı×Ó
-¡¡¡¡1. ÔÚPL/SQLÔËĞĞDDLÓï¾ä
-¡¡¡¡begin
-¡¡¡¡execute immediate 'set role all';
-¡¡¡¡end;
-¡¡¡¡2. ¸ø¶¯Ì¬Óï¾ä´«Öµ(USING ×Ó¾ä)
-¡¡¡¡declare
-¡¡¡¡l_depnam varchar2(20) := 'testing';
-¡¡¡¡l_locvarchar2(10) := 'Dubai';
-¡¡¡¡begin
-¡¡¡¡execute immediate 'insert into dept values(:1, :2, :3)'
-¡¡¡¡using 50, l_depnam, l_loc;
-¡¡¡¡commit;
-¡¡¡¡end;
-¡¡¡¡3. ´Ó¶¯Ì¬Óï¾ä¼ìË÷Öµ(INTO×Ó¾ä)
-¡¡¡¡declare
-¡¡¡¡l_cntvarchar2(20);
-¡¡¡¡begin
-¡¡¡¡execute immediate 'select count(1) from emp'
-¡¡¡¡into l_cnt;
-¡¡¡¡dbms_output.put_line(l_cnt);
-¡¡¡¡end;
-¡¡¡¡4. ¶¯Ì¬µ÷ÓÃÀı³Ì.Àı³ÌÖĞÓÃµ½µÄ°ó¶¨±äÁ¿²ÎÊı±ØĞëÖ¸¶¨²ÎÊıÀàĞÍ.ü]ÈÏÎªINÀàĞÍ,ÆäËüÀàĞÍ±ØĞëÏÔÊ½Ö¸¶¨
-¡¡¡¡declare
-¡¡¡¡l_routin varchar2(100) := 'gen2161.get_rowcnt';
-¡¡¡¡l_tblnam varchar2(20) := 'emp';
-¡¡¡¡l_cntnumber;
-¡¡¡¡l_status varchar2(200);
-¡¡¡¡begin
-¡¡¡¡execute immediate 'begin ' l_routin '(:2, :3, :4); end;'
-¡¡¡¡using in l_tblnam, out l_cnt, in out l_status;
-¡¡¡¡if l_status != 'OK' then
-¡¡¡¡dbms_output.put_line('error');
-¡¡¡¡end if;
-¡¡¡¡end;
-¡¡¡¡5. ½«·µ»ØÖµ´«µİµ½PL/SQL¼ÇÂ¼ÀàĞÍ;Í¬ÑùÒ²¿ÉÓÃ%rowtype±äÁ¿
-¡¡¡¡declare
-¡¡¡¡type empdtlrec is record (empnonumber(4),
-¡¡¡¡enamevarchar2(20),
-¡¡¡¡deptnonumber(2));
-¡¡¡¡empdtl empdtlrec;
-¡¡¡¡begin
-¡¡¡¡execute immediate 'select empno, ename, deptno ' 
-¡¡¡¡'from emp where empno = 7934'
-¡¡¡¡into empdtl;
-¡¡¡¡end;
-¡¡¡¡6. ´«µİ²¢¼ìË÷Öµ.INTO×Ó¾äÓÃÔÚUSING×Ó¾äÇ°
-¡¡¡¡declare
-¡¡¡¡l_deptpls_integer := 20;
-¡¡¡¡l_nam varchar2(20);
-¡¡¡¡l_loc varchar2(20);
-¡¡¡¡begin
-¡¡¡¡execute immediate 'select dname, loc from dept where deptno = :1'
-¡¡¡¡into l_nam, l_loc
-¡¡¡¡using l_dept ;
-¡¡¡¡end;
-¡¡¡¡7. ¶àĞĞ²éÑ¯Ñ¡Ïî.¶Ô´ËÑ¡ÏîÓÃinsertÓï¾äÌî³äÁÙÊ±±í£¬ÓÃÁÙÊ±±í½øĞĞ½øÒ»²½µÄ´¦Àí,Ò²¿ÉÒÔÓÃREF cursors¾ÀÕı´ËÈ±º¶.
-¡¡¡¡declare
-¡¡¡¡l_sal pls_integer := 2000;
-¡¡¡¡begin
-¡¡¡¡execute immediate 'insert into temp(empno, ename) ' 
-¡¡¡¡'select empno, ename from emp ' 
-¡¡¡¡'wheresal :1'
-¡¡¡¡using l_sal;
-¡¡¡¡commit;
-¡¡¡¡end;
-¡¡¡¡¶ÔÓÚ´¦Àí¶¯Ì¬Óï¾ä,EXECUTE IMMEDIATE±ÈÒÔÇ°¿ÉÄÜÓÃµ½µÄ¸üÇáÒ×²¢ÇÒ¸ü¸ßĞ§.µ±ÒâÍ¼Ö´ĞĞ¶¯Ì¬Óï¾äÊ±£¬ÊÊµ±µØ´¦ÀíÒì³£¸ü¼ÓÖØÒª.Ó¦¸Ã¹Ø×¢ÓÚ²¶×½ËùÓĞ¿ÉÄÜµÄÒì³£.
+    EXECUTE IMMEDIATEä»£æ›¿äº†ä»¥å‰Oracle8iä¸­DBMS_SQL packageåŒ….å®ƒè§£æå¹¶é©¬ä¸Šæ‰§è¡ŒåŠ¨æ€çš„SQLè¯­å¥æˆ–éè¿è¡Œæ—¶åˆ›å»ºçš„PL/SQLå—.åŠ¨æ€åˆ›å»ºå’Œæ‰§è¡ŒSQLè¯­å¥æ€§èƒ½è¶…å‰ï¼ŒEXECUTE IMMEDIATEçš„ç›®æ ‡åœ¨äºå‡å°ä¼ä¸šè´¹ç”¨å¹¶è·å¾—è¾ƒé«˜çš„æ€§èƒ½ï¼Œè¾ƒä¹‹ä»¥å‰å®ƒç›¸å½“è½»æ˜“ç¼–ç .å°½ç®¡DBMS_SQLä»ç„¶å¯ç”¨ï¼Œ
+    ä½†æ˜¯æ¨èä½¿ç”¨EXECUTE IMMEDIATE,å› ä¸ºå®ƒè·çš„æ”¶ç›Šåœ¨åŒ…ä¹‹ä¸Šã€‚
+ã€€ã€€ä½¿ç”¨æŠ€å·§
+ã€€ã€€1. EXECUTE IMMEDIATEå°†ä¸ä¼šæäº¤ä¸€ä¸ªDMLäº‹åŠ¡æ‰§è¡Œï¼Œåº”è¯¥æ˜¾å¼æäº¤
+ã€€ã€€å‡å¦‚é€šè¿‡EXECUTE IMMEDIATEå¤„ç†DMLå‘½ä»¤ï¼Œé‚£ä¹ˆåœ¨å®Œæˆä»¥å‰éœ€è¦æ˜¾å¼æäº¤æˆ–è€…ä½œä¸ºEXECUTE IMMEDIATEè‡ªå·±çš„ä¸€éƒ¨åˆ†. å‡å¦‚é€šè¿‡EXECUTE IMMEDIATEå¤„ç†DDLå‘½ä»¤,å®ƒæäº¤æ‰€æœ‰ä»¥å‰æ”¹å˜çš„æ•°æ®
+ã€€ã€€2. ä¸æ”¯æŒè¿”å›å¤šè¡Œçš„æŸ¥è¯¢,è¿™ç§äº¤äº’å°†ç”¨ä¸´æ—¶è¡¨æ¥å­˜å‚¨è®°å½•(å‚ç…§ä¾‹å­å¦‚ä¸‹)æˆ–è€…ç”¨REF cursors.
+ã€€ã€€3. å½“æ‰§è¡ŒSQLè¯­å¥æ—¶ï¼Œä¸è¦ç”¨åˆ†å·ï¼Œå½“æ‰§è¡ŒPL/SQLå—æ—¶ï¼Œåœ¨å…¶å°¾éƒ¨ç”¨åˆ†å·.
+ã€€ã€€4. åœ¨Oracleæ‰‹å†Œä¸­ï¼Œæœªå…·ä½“è¦†ç›–è¿™äº›åŠŸèƒ½ã€‚ä¸‹é¢çš„ä¾‹å­å±•ç¤ºäº†æ‰€æœ‰ç”¨åˆ°Execute immediateçš„å¯èƒ½æ–¹é¢.å¸Œæœ›èƒ½ç»™ä½ å¸¦æ¥æ–¹ä¾¿.
+ã€€ã€€5. å¯¹äºFormså¼€å‘è€…,å½“åœ¨PL/SQL 8.0.6.3.ç‰ˆæœ¬ä¸­ï¼ŒForms 6iä¸èƒ½ä½¿ç”¨æ­¤åŠŸèƒ½.
+ã€€ã€€EXECUTE IMMEDIATEç”¨æ³•ä¾‹å­
+ã€€ã€€1. åœ¨PL/SQLè¿è¡ŒDDLè¯­å¥
+ã€€ã€€begin
+ã€€ã€€execute immediate 'set role all';
+ã€€ã€€end;
+ã€€ã€€2. ç»™åŠ¨æ€è¯­å¥ä¼ å€¼(USING å­å¥)
+ã€€ã€€declare
+ã€€ã€€l_depnam varchar2(20) := 'testing';
+ã€€ã€€l_locvarchar2(10) := 'Dubai';
+ã€€ã€€begin
+ã€€ã€€execute immediate 'insert into dept values(:1, :2, :3)'
+ã€€ã€€using 50, l_depnam, l_loc;
+ã€€ã€€commit;
+ã€€ã€€end;
+ã€€ã€€3. ä»åŠ¨æ€è¯­å¥æ£€ç´¢å€¼(INTOå­å¥)
+ã€€ã€€declare
+ã€€ã€€l_cntvarchar2(20);
+ã€€ã€€begin
+ã€€ã€€execute immediate 'select count(1) from emp'
+ã€€ã€€into l_cnt;
+ã€€ã€€dbms_output.put_line(l_cnt);
+ã€€ã€€end;
+ã€€ã€€4. åŠ¨æ€è°ƒç”¨ä¾‹ç¨‹.ä¾‹ç¨‹ä¸­ç”¨åˆ°çš„ç»‘å®šå˜é‡å‚æ•°å¿…é¡»æŒ‡å®šå‚æ•°ç±»å‹.é»“è®¤ä¸ºINç±»å‹,å…¶å®ƒç±»å‹å¿…é¡»æ˜¾å¼æŒ‡å®š
+ã€€ã€€declare
+ã€€ã€€l_routin varchar2(100) := 'gen2161.get_rowcnt';
+ã€€ã€€l_tblnam varchar2(20) := 'emp';
+ã€€ã€€l_cntnumber;
+ã€€ã€€l_status varchar2(200);
+ã€€ã€€begin
+ã€€ã€€execute immediate 'begin ' l_routin '(:2, :3, :4); end;'
+ã€€ã€€using in l_tblnam, out l_cnt, in out l_status;
+ã€€ã€€if l_status != 'OK' then
+ã€€ã€€dbms_output.put_line('error');
+ã€€ã€€end if;
+ã€€ã€€end;
+ã€€ã€€5. å°†è¿”å›å€¼ä¼ é€’åˆ°PL/SQLè®°å½•ç±»å‹;åŒæ ·ä¹Ÿå¯ç”¨%rowtypeå˜é‡
+ã€€ã€€declare
+ã€€ã€€type empdtlrec is record (empnonumber(4),
+ã€€ã€€enamevarchar2(20),
+ã€€ã€€deptnonumber(2));
+ã€€ã€€empdtl empdtlrec;
+ã€€ã€€begin
+ã€€ã€€execute immediate 'select empno, ename, deptno ' 
+ã€€ã€€'from emp where empno = 7934'
+ã€€ã€€into empdtl;
+ã€€ã€€end;
+ã€€ã€€6. ä¼ é€’å¹¶æ£€ç´¢å€¼.INTOå­å¥ç”¨åœ¨USINGå­å¥å‰
+ã€€ã€€declare
+ã€€ã€€l_deptpls_integer := 20;
+ã€€ã€€l_nam varchar2(20);
+ã€€ã€€l_loc varchar2(20);
+ã€€ã€€begin
+ã€€ã€€execute immediate 'select dname, loc from dept where deptno = :1'
+ã€€ã€€into l_nam, l_loc
+ã€€ã€€using l_dept ;
+ã€€ã€€end;
+ã€€ã€€7. å¤šè¡ŒæŸ¥è¯¢é€‰é¡¹.å¯¹æ­¤é€‰é¡¹ç”¨insertè¯­å¥å¡«å……ä¸´æ—¶è¡¨ï¼Œç”¨ä¸´æ—¶è¡¨è¿›è¡Œè¿›ä¸€æ­¥çš„å¤„ç†,ä¹Ÿå¯ä»¥ç”¨REF cursorsçº æ­£æ­¤ç¼ºæ†¾.
+ã€€ã€€declare
+ã€€ã€€l_sal pls_integer := 2000;
+ã€€ã€€begin
+ã€€ã€€execute immediate 'insert into temp(empno, ename) ' 
+ã€€ã€€'select empno, ename from emp ' 
+ã€€ã€€'wheresal :1'
+ã€€ã€€using l_sal;
+ã€€ã€€commit;
+ã€€ã€€end;
+ã€€ã€€å¯¹äºå¤„ç†åŠ¨æ€è¯­å¥,EXECUTE IMMEDIATEæ¯”ä»¥å‰å¯èƒ½ç”¨åˆ°çš„æ›´è½»æ˜“å¹¶ä¸”æ›´é«˜æ•ˆ.å½“æ„å›¾æ‰§è¡ŒåŠ¨æ€è¯­å¥æ—¶ï¼Œé€‚å½“åœ°å¤„ç†å¼‚å¸¸æ›´åŠ é‡è¦.åº”è¯¥å…³æ³¨äºæ•æ‰æ‰€æœ‰å¯èƒ½çš„å¼‚å¸¸.

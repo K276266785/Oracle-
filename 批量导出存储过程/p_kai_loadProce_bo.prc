@@ -2,8 +2,8 @@ create or replace procedure p_kai_loadProce_bo(owner in varchar2,
                                                a_out_msg out varchar2) is
   /*
   --kai 2015-04-23
-  --Ä£¿é¹¦ÄÜ:ÅúÁ¿µ¼³ö´æ´¢¹ı³Ì-->Éú³ÉtxtÎÄ¼ş
-  --²ÎÊıËµÃ÷:owner -- (ÓÃ»§:Èçray2)
+  --æ¨¡å—åŠŸèƒ½:æ‰¹é‡å¯¼å‡ºå­˜å‚¨è¿‡ç¨‹-->ç”Ÿæˆtxtæ–‡ä»¶
+  --å‚æ•°è¯´æ˜:owner -- (ç”¨æˆ·:å¦‚ray2)
   */
     type user_source_table_type is table of user_source.text%TYPE INDEX BY BINARY_INTEGER;
     user_source_table user_source_table_type;
@@ -19,18 +19,18 @@ create or replace procedure p_kai_loadProce_bo(owner in varchar2,
 begin
   v_temp_0a := 'tmp_kai_proc_list_0a';
   /*---------------------------------------------------------------------------------------------
-  --×¢:Ê¹ÓÃÇ°ÏÈÖ´ĞĞ
-  --ÉèÖÃµ¼³öÂ·¾¶
+  --æ³¨:ä½¿ç”¨å‰å…ˆæ‰§è¡Œ
+  --è®¾ç½®å¯¼å‡ºè·¯å¾„
   create or replace directory PROCE_DIR as 'E:/test';
-  --¸³È¨Óï¾ä
+  --èµ‹æƒè¯­å¥
   grant create any directory to RAY2;
-  --³·È¨Óï¾ä
+  --æ’¤æƒè¯­å¥
   revoke create any directory from RAY2;
-  --²é¿´ÉèÖÃ
+  --æŸ¥çœ‹è®¾ç½®
   select * from dba_directories;
   --------------------------------------------------------------------------------------------- */
 
-  ------------------------------------È¡Ö¸¶¨Ãû³Æ´æ´¢¹ı³Ì--------------------------------------
+  ------------------------------------å–æŒ‡å®šåç§°å­˜å‚¨è¿‡ç¨‹--------------------------------------
   v_sql := 'select distinct name as tc_old_proc_name,
                    replace(replace(replace(upper(name),''_BRO'',''_ACT''),''_BO'',''_ACT''),''_ACTION'',''_ACT'') as tc_new_proc_name
                    from all_source
@@ -43,7 +43,7 @@ begin
   p_create_tmp_table_bro(v_sql,v_temp_0a);
   ---------------------------------------------------------------------------------------------
 
-  ------------------------------------µ¼³ö------------------------------------------------
+  ------------------------------------å¯¼å‡º------------------------------------------------
   sql_stat:='select distinct tc_old_proc_name from '||v_temp_0a;
   execute immediate sql_stat bulk collect into user_source_table;
   file_handle:=utl_file.fopen('PROCE_DIR','test.sql','w');

@@ -1,4 +1,4 @@
-﻿对于oracle10g简单方法:
+对于oracle10g简单方法:
 1. 先建立一个物化视图,不用指明刷新参数,只要create materialized view,如
   CREATE MATERIALIZED VIEW mv_emp  
   AS SELECT * FROM scott.emp;

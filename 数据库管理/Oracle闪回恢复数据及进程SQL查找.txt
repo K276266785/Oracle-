@@ -1,4 +1,4 @@
---¸¨ÖúÊı¾İ¿â
+--è¾…åŠ©æ•°æ®åº“
 alter system set log_archive_dest_1 ='location:e:\archivelog';
 
 alter system switch logfile;
@@ -9,37 +9,37 @@ configure controlfile autobackup on ;
 
 backup database;
 
-¸´ÖÆÊı¾İ¿â²»ÍêÈ«»Ö¸´
+å¤åˆ¶æ•°æ®åº“ä¸å®Œå…¨æ¢å¤
 
-1¡¢´´½¨ÊµÀı
+1ã€åˆ›å»ºå®ä¾‹
 
 oradim -new -sid TESTAUX startmode auto
-2¡¢´´½¨ÃÜÂëÎÄ¼ş
+2ã€åˆ›å»ºå¯†ç æ–‡ä»¶
 orapwd file=E:\app\Administrator\product\11.1.0\db_1\database\PWDtestaux.ora password=oracle
 
-3¡¢´´½¨pfile¼°Ïà¹ØÄ¿Â¼
+3ã€åˆ›å»ºpfileåŠç›¸å…³ç›®å½•
 SQL>create pfile from spfile
 
-4¡¢ĞŞ¸Äpfile
+4ã€ä¿®æ”¹pfile
 
-1£©ÖØ¶¨Òåcontrolfile ²ÎÊıÖ¸ÏòµÄÎ»ÖÃ
+1ï¼‰é‡å®šä¹‰controlfile å‚æ•°æŒ‡å‘çš„ä½ç½®
 
- 2£©ÖØ¶¨ÒåÊı¾İÎÄ¼şµÄÎ»ÖÃ£¬Í¨¹ı db_file_name_convert²ÎÊı¶¨Òå£¬Èç£º
+ 2ï¼‰é‡å®šä¹‰æ•°æ®æ–‡ä»¶çš„ä½ç½®ï¼Œé€šè¿‡ db_file_name_convertå‚æ•°å®šä¹‰ï¼Œå¦‚ï¼š
 
   db_file_name_convert='/u02','/dba' 
 
-3£©ÖØ¶¨ÒåÁª»úÈÕÖ¾ÎÄ¼şµÄÎ»ÖÃ£¬Í¨¹ılog_file_name_convert£¬Èç£º
+3ï¼‰é‡å®šä¹‰è”æœºæ—¥å¿—æ–‡ä»¶çš„ä½ç½®ï¼Œé€šè¿‡log_file_name_convertï¼Œå¦‚ï¼š
    
 log_file_name_convert='/u02','/dba' 
 
-4£©ÆäËûºÍÂ·¾¶ÓĞ¹ØµÄ²ÎÊı¸ù¾İĞèÒªĞŞ¸Ä
+4ï¼‰å…¶ä»–å’Œè·¯å¾„æœ‰å…³çš„å‚æ•°æ ¹æ®éœ€è¦ä¿®æ”¹
 
-5¡¢Æô¶¯¸¨ÖúÊı¾İ¿âµ½nomount
+5ã€å¯åŠ¨è¾…åŠ©æ•°æ®åº“åˆ°nomount
  
 SET ORACLE_SID=?
 SQL>startup nomount
 
-6¡¢Á¬½Óµ½Ä¿±êÊı¾İ¿âºÍ¸¨ÖúÊı¾İ¿â
+6ã€è¿æ¥åˆ°ç›®æ ‡æ•°æ®åº“å’Œè¾…åŠ©æ•°æ®åº“
 
 rman target sys/password@test auxiliary sys/password
 
@@ -47,19 +47,19 @@ run{
 duplicate target database to testaux pfile=/u01/app/oracle/product/10.2/dbs/inittestaux.ora
 until scn 617034;}
 
-¶¨Î»ÓĞÎÊÌâµÄSQLÓï¾ä
-Statspack±¨¸æ
-ASH±¨¸æ--»î¶¯»á»°
-AWR±¨¸æ
-SQL¸ú×Ù
+å®šä½æœ‰é—®é¢˜çš„SQLè¯­å¥
+StatspackæŠ¥å‘Š
+ASHæŠ¥å‘Š--æ´»åŠ¨ä¼šè¯
+AWRæŠ¥å‘Š
+SQLè·Ÿè¸ª
 
 select sid,serial#,username from v$sesson where username='TEST';
 
 exec dbms_system,set_sql_trace_in_session()
 
-A¡¢¼ì²é²¢¸ú×ÙÊı¾İ¿â½ø³Ì 
-Õï¶ÏÊ±ÊÇÍíÉÏ£¬ÎŞÓÃ»§·ÃÎÊ£¬ÔÚÇ°Ì¨µã»÷Ïà¹ØÒ³Ãæ,Í¬Ê±½øĞĞ½ø³Ì¸ú×Ù
-²éÑ¯v$sessionÊÓÍ¼,»ñÈ¡½ø³ÌĞÅÏ¢
+Aã€æ£€æŸ¥å¹¶è·Ÿè¸ªæ•°æ®åº“è¿›ç¨‹ 
+è¯Šæ–­æ—¶æ˜¯æ™šä¸Šï¼Œæ— ç”¨æˆ·è®¿é—®ï¼Œåœ¨å‰å°ç‚¹å‡»ç›¸å…³é¡µé¢,åŒæ—¶è¿›è¡Œè¿›ç¨‹è·Ÿè¸ª
+æŸ¥è¯¢v$sessionè§†å›¾,è·å–è¿›ç¨‹ä¿¡æ¯
 SQL> select sid,serial#,username from v$session;
        SID    SERIAL# USERNAME
 ---------- ---------- ------------------------------
@@ -74,22 +74,22 @@ SQL> select sid,serial#,username from v$session;
         12        164   SYS
         16       1042   IFLOW
 10 rows selected.
-ÆôÓÃÏà¹Ø½ø³Ìsql_trace
+å¯ç”¨ç›¸å…³è¿›ç¨‹sql_trace
 SQL> exec dbms_system.set_sql_trace_in_session(7,284,true)
 PL/SQL procedure successfully completed.
 SQL> exec dbms_system.set_sql_trace_in_session(11,214,true)
 PL/SQL procedure successfully completed.
 SQL> exec dbms_system.set_sql_trace_in_session(16,1042,true)
 PL/SQL procedure successfully completed.
-µÈºòÒ»¶ÎÊ±¼ä,¹Ø±Õsql_trace
+ç­‰å€™ä¸€æ®µæ—¶é—´,å…³é—­sql_trace
 SQL> exec dbms_system.set_sql_trace_in_session(7,284,false)
 PL/SQL procedure successfully completed.
 SQL> exec dbms_system.set_sql_trace_in_session(11,214,false)
 PL/SQL procedure successfully completed.
 SQL> exec dbms_system.set_sql_trace_in_session(16,1042,false)
 PL/SQL procedure successfully completed.
-B¡¢¼ì²étraceÎÄ¼ş
-¼ì²é·¢ÏÖÒÔÏÂÓï¾äÊÇ¿ÉÒÉµÄ
+Bã€æ£€æŸ¥traceæ–‡ä»¶
+æ£€æŸ¥å‘ç°ä»¥ä¸‹è¯­å¥æ˜¯å¯ç–‘çš„
 select auditstatus,categoryid,auditlevel 
 from
  categoryarticleassign a,category b where b.id=a.categoryid and articleId=
@@ -103,9 +103,9 @@ Fetch       1      0.81       0.81          0       3892        0           1
 -------     ------     --------     ----------    ----------    ----------    ----------  ----------
 total        3      0.81       0.81          0        3892        0         1
 ******************************************************************************************************************             
- ÕâÀïÏÔÈ»ÊÇ¸ù¾İarticleId½øĞĞĞÂÎÅ¶ÁÈ¡µÄ.
-ºÜ¿ÉÒÉµÄÊÇquery¶ÁÈ¡ÓĞ3892
-ÔÚ¿´traceÎÄ¼şµÄºóÃæ
+ è¿™é‡Œæ˜¾ç„¶æ˜¯æ ¹æ®articleIdè¿›è¡Œæ–°é—»è¯»å–çš„.
+å¾ˆå¯ç–‘çš„æ˜¯queryè¯»å–æœ‰3892
+åœ¨çœ‹traceæ–‡ä»¶çš„åé¢
 ********************************************************************************
 select auditstatus,categoryid 
 from
@@ -134,7 +134,7 @@ Rows     Row Source Operation
 ------- ----------- ----------------------------------------
       1 'TABLE ACCESS FULL CATEGORYARTICLEASSIGN'
 
-ÎÒÃÇ×¢Òâµ½£¬ÕâÀïÓĞÒ»¸öÈ«±íÉ¨Ãè´æÔÚ
+æˆ‘ä»¬æ³¨æ„åˆ°ï¼Œè¿™é‡Œæœ‰ä¸€ä¸ªå…¨è¡¨æ‰«æå­˜åœ¨
 
 
 FLASHBACK TABLE test_sort TO TIMESTAMP to_timestamp('2009-08-06 18:31:54', 'YYYY-MM-DD HH24:MI:SS')

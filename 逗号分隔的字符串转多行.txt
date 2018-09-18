@@ -1,5 +1,5 @@
 --Oracle 11g
---¡–◊™––(unpivot)
+--ÂàóËΩ¨Ë°å(unpivot)
 select tc_plu_rowid,
        tc_color_rowid,
        replace(upper(tc_size),upper('tc_qty_'),'') as tc_size_code,
@@ -18,7 +18,7 @@ select tc_plu_rowid,
                where tc_stk_hd_rowid = 133187) 
                unpivot (tc_qty for tc_size in (tc_qty_s1,tc_qty_s2,tc_qty_s3,tc_qty_s4,tc_qty_s5,tc_qty_s6,tc_qty_s7))
 
---––◊™¡–
+--Ë°åËΩ¨Âàó
 call p_create_tmp_table_bro('select tc_plu_rowid,
        tc_color_rowid,
        tc_size_rowid,
@@ -29,7 +29,7 @@ where tc_pos_sale_hd_rowid = 1046013','tmp_kai_test1');
 
 drop table tmp_kai_test1;
 
---∑Ω Ω1
+--ÊñπÂºè1
 select tc_plu_rowid,
        tc_color_rowid,
        sum(nvl(tc_qty_s1,0)) as tc_qty_s1,
@@ -53,7 +53,7 @@ select tc_plu_rowid,
 pivot (sum(tc_qty) for tc_size_code in ('S1' as tc_qty_s1,'S2' as tc_qty_s2,'S3' as tc_qty_s3,'S4' as tc_qty_s4,'S5' as tc_qty_s5,'S6' as tc_qty_s6,'S7' as tc_qty_s7))
 group by tc_plu_rowid,tc_color_rowid
 
---∑Ω Ω2
+--ÊñπÂºè2
 select tc_plu_rowid,
        tc_color_rowid,
        sum(case when tc_size_code='S1' then tc_qty else 0 end) as tc_qty_s1,
@@ -80,15 +80,15 @@ group by tc_plu_rowid,tc_color_rowid
 select rownum as tc_id,
        regexp_substr(t.tc_name, '[^,]+', 1, tc_lv) as tc_name,  
        regexp_substr(t.tc_type, '[^,]+', 1, tc_lv) as tc_type 
-from (select '¿‡±,∆∑≈∆,◊∞±' tc_name,
+from (select 'Á±ªÂà´,ÂìÅÁâå,Ë£ÖÂà´' tc_name,
              'category,brand,sort' tc_type from dual) t,
  (select level tc_lv from dual connect by level <= 1000)  
  where tc_lv(+) <= length(t.tc_name) - length(replace(t.tc_name, ',')) + 1 ;
 
 
-Oracle∂∫∫≈∑÷∏Ùµƒ◊÷∑˚¥ÆΩ¯––––◊™¡–2011-07-11 19:45
-9iœ¬
---∂‡––
+OracleÈÄóÂè∑ÂàÜÈöîÁöÑÂ≠óÁ¨¶‰∏≤ËøõË°åË°åËΩ¨Âàó2011-07-11 19:45
+9i‰∏ã
+--Â§öË°å
 with temp as
 (select '6001600301,6001600302,6001600303,6001600304' text from dual
 union
@@ -112,7 +112,7 @@ TEXT
 7001600303
 
 
---µ•––
+--ÂçïË°å
 with temp as
 (select '6001600301,6001600302,6001600303,6001600304' text from dual)
 select substr(text,instr(text,',',1,rn)+1,instr(text,',',1,rn+1)-instr(text,',',1,rn)-1) text from
@@ -128,8 +128,8 @@ TEXT
 6001600304
 
 
-10Gœ¬
---∂‡––
+10G‰∏ã
+--Â§öË°å
 with temp as
 (select '6001600301,6001600302,6001600303,6001600304' text from dual
 union
@@ -153,7 +153,7 @@ TEXT
 7001600303
 
 
---µ•––
+--ÂçïË°å
 with temp as
 (select '6001600301,6001600302,6001600303,6001600304' text from dual)
 select regexp_substr(text,'[0-9]+',1,rn) text from temp t1,
@@ -165,10 +165,10 @@ TEXT
 6001600303
 6001600304 
 
---ªÒ»°÷ß∏∂∑Ω Ω
+--Ëé∑ÂèñÊîØ‰ªòÊñπÂºè
 with temp as
 (select 'tc_money_amt1,tc_money_amt2,tc_money_amt3,tc_money_amt4,tc_money_amt5,tc_money_amt6,tc_money_amt7' tc_code,
-        'œ÷Ω,À¢ø®,π´Àæœ÷Ω»Ø,…Ã≥°π∫ŒÔø®,ª˝∑÷÷ß∏∂,¥Ÿœ˙”°ª®,»´µ•º¥ºı' tc_name,
+        'Áé∞Èáë,Âà∑Âç°,ÂÖ¨Âè∏Áé∞ÈáëÂà∏,ÂïÜÂú∫Ë¥≠Áâ©Âç°,ÁßØÂàÜÊîØ‰ªò,‰øÉÈîÄÂç∞Ëä±,ÂÖ®ÂçïÂç≥Âáè' tc_name,
         '1,2,3,4,5,6,7' tc_value,
         '1,1,1,1,0,0,0' tc_is_performance from dual)
 select substr(tc_code,instr(tc_code,',',1,rn)+1,instr(tc_code,',',1,rn+1)-instr(tc_code,',',1,rn)-1) tc_code,

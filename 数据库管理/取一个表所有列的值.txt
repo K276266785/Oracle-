@@ -1,4 +1,4 @@
---²Î¿¼ÎÄµµ:https://www.cnblogs.com/huanghongbo/p/7650499.html
+--å‚è€ƒæ–‡æ¡£:https://www.cnblogs.com/huanghongbo/p/7650499.html
 
 create or replace procedure p_test222(a_out_msg out varchar2) is
   /*
@@ -19,16 +19,16 @@ create or replace procedure p_test222(a_out_msg out varchar2) is
   v_msg   varchar2(10000);
 begin
   sqlstmt := 'SELECT * FROM TMP_KAI_TEST1 where id=:rownumber';
-  -- ´ò¿ª¹â±ê
+  -- æ‰“å¼€å…‰æ ‡
   OPEN cursrc FOR sqlstmt USING rownumber;
 
-  -- ´Ó±¾µØ¶¯Ì¬SQL×ª»»ÎªDBMS_SQL
+  -- ä»Žæœ¬åœ°åŠ¨æ€SQLè½¬æ¢ä¸ºDBMS_SQL
   curid := dbms_sql.to_cursor_number(cursrc);
-  --»ñÈ¡ÓÎ±êÀïÃæµÄÊý¾ÝÁÐÏîÊýºÍÃ¿¸öÊý¾ÝÁÐµÄÊôÐÔ£¬±ÈÈçÁÐÃû£¬ÀàÐÍ£¬³¤¶ÈµÈ
+  --èŽ·å–æ¸¸æ ‡é‡Œé¢çš„æ•°æ®åˆ—é¡¹æ•°å’Œæ¯ä¸ªæ•°æ®åˆ—çš„å±žæ€§ï¼Œæ¯”å¦‚åˆ—åï¼Œç±»åž‹ï¼Œé•¿åº¦ç­‰
   dbms_sql.describe_columns(curid, colcnt, desctab);
-  -- ¶¨ÒåÁÐ
+  -- å®šä¹‰åˆ—
   FOR i IN 1 .. colcnt LOOP
-    --´Ë´¦ÊÇ¶¨ÒåÓÎ±êÖÐÁÐµÄ¶ÁÈ¡ÀàÐÍ£¬¿ÉÒÔ¶¨ÒåÎª×Ö·û£¬Êý×ÖºÍÈÕÆÚÀàÐÍ£¬
+    --æ­¤å¤„æ˜¯å®šä¹‰æ¸¸æ ‡ä¸­åˆ—çš„è¯»å–ç±»åž‹ï¼Œå¯ä»¥å®šä¹‰ä¸ºå­—ç¬¦ï¼Œæ•°å­—å’Œæ—¥æœŸç±»åž‹ï¼Œ
     IF desctab(i).col_type = 2 THEN
       dbms_sql.define_column(curid, i, vnum);
     ELSIF desctab(i).col_type = 12 THEN
@@ -37,8 +37,8 @@ begin
       dbms_sql.define_column(curid, i, vname, 50);
     END IF;
   END LOOP;
-  -- DBMS_SQL°ü»ñÈ¡ÐÐ
-  --´ÓÓÎ±êÖÐ°ÑÊý¾Ý¼ìË÷µ½»º´æÇø£¨BUFFER£©ÖÐ£¬»º³åÇø µÄÖµÖ»ÄÜ±»º¯ÊýCOULUMN_VALUE()Ëù¶ÁÈ¡
+  -- DBMS_SQLåŒ…èŽ·å–è¡Œ
+  --ä»Žæ¸¸æ ‡ä¸­æŠŠæ•°æ®æ£€ç´¢åˆ°ç¼“å­˜åŒºï¼ˆBUFFERï¼‰ä¸­ï¼Œç¼“å†²åŒº çš„å€¼åªèƒ½è¢«å‡½æ•°COULUMN_VALUE()æ‰€è¯»å–
   WHILE dbms_sql.fetch_rows(curid) > 0 LOOP
     FOR i IN 1 .. colcnt LOOP
       IF (desctab(i).col_type = 1) THEN

@@ -1,4 +1,4 @@
---1.±ê×¼´¦Àí  
+--1.æ ‡å‡†å¤„ç†  
   a_out_keyarray   := array_varchar2_50();
   a_out_valuearray := array_varchar2_50();
   a_out_keyarray.extend;
@@ -10,7 +10,7 @@
   a_out_valuearray.extend;
   a_out_valuearray(a_out_valuearray.count) := v_chk_permit;
 
---2.¼ò»¯´¦Àí
+--2.ç®€åŒ–å¤„ç†
 a_out_keyarray   := f_str_split('tc_from_store_code,tc_from_store_name,tc_to_store_code,tc_to_store_name,tc_stk_hd_qty', ',');
 a_out_valuearray := f_str_split(v_from_store_code || ',' ||
                                 v_from_store_name || ',' ||

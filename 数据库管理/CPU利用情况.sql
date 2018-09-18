@@ -1,4 +1,4 @@
---5.1 ²é¿´Ã¿¸öSessionµÄCPUÀûÓÃÇé¿ö£º
+--5.1 æŸ¥çœ‹æ¯ä¸ªSessionçš„CPUåˆ©ç”¨æƒ…å†µï¼š
 select ss.sid, se.command, ss.value CPU, se.username, se.program
   from v$sesstat ss, v$session se
  where ss.statistic# in
@@ -8,7 +8,7 @@ select ss.sid, se.command, ss.value CPU, se.username, se.program
    and se.sid = ss.sid
    and ss.sid > 6
  order by ss.value desc;
---5.2±È½ÏÒ»ÏÂÄÄ¸ösessionµÄCPUÊ¹ÓÃÊ±¼ä×î¶à£¬È»ºó²é¿´¸ÃSessionµÄ¾ßÌåÇé¿ö£º
+--5.2æ¯”è¾ƒä¸€ä¸‹å“ªä¸ªsessionçš„CPUä½¿ç”¨æ—¶é—´æœ€å¤šï¼Œç„¶åæŸ¥çœ‹è¯¥Sessionçš„å…·ä½“æƒ…å†µï¼š
 /*
 select s.sid, s.event, s.wait_time, w.seq#, q.sql_text
   from v$session_wait w, v$session s, v$process p, v$sqlarea q

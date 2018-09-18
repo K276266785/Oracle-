@@ -1,6 +1,6 @@
 https://blog.csdn.net/newegg2009/article/details/7574707
 
-1.创建表：
+1.鍒涘缓琛細
 create table test(id int,name varchar(20),quarter int,profile int))
 
 insert into test values(1,'a',1,1000);
@@ -13,7 +13,7 @@ insert into test values(2,'a',3,1000);
 insert into test values(2,'a',4,1000);
 
 
-2. Pivot 用法
+2. Pivot 鐢ㄦ硶
 select id,name,[1] as '1th Season',[2] as '2th Season',[3] as '3th Season',[4] as '4th Season'
 from test
 pivot

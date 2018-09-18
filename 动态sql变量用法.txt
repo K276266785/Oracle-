@@ -1,4 +1,4 @@
-1.Ò»°ã±äÁ¿µÄĞ´·¨:
+1.ä¸€èˆ¬å˜é‡çš„å†™æ³•:
 if (str_kind is not null) then
     l_str_kind := str_kind;
     v_wheresql := v_wheresql || ' and kind = :kind ';
@@ -7,7 +7,7 @@ else
     v_wheresql := v_wheresql || ' and 1 = :kind ';
 end if; 
 
-2.Ê±¼ä¶ÎµÄĞ´·¨:
+2.æ—¶é—´æ®µçš„å†™æ³•:
 if (dt_itstarttime is not null) then
     v_wheresql := v_wheresql || ' and createtime >= (' || to_date(dt_itstarttime, 'yyyy-mm-dd hh24:mi:ss') || ' )';
 end;
@@ -24,17 +24,17 @@ if (dt_valendtime is not null) then
     v_wheresql := v_wheresql || ' and validtime <= (' || to_date(dt_valendtime, 'yyyy-mm-dd hh24:mi:ss') || ' )';
 end;
 
-»ò:
+æˆ–:
   v_sql := v_sql || ' and trunc(a.creattime) >= to_date(:crestarttime,''yyyy-mm-dd'') ';
   v_sql := v_sql || ' and trunc(a.creattime) <= to_date(:creendtime,''yyyy-mm-dd'') ';
   v_sql := v_sql || ' and trunc(a.updatetime) >= to_date(:updstarttime,''yyyy-mm-dd'') ';
   v_sql := v_sql || ' and trunc(a.updatetime) <= to_date(:updendtime,''yyyy-mm-dd'') ';
   
 
-3.Ê±¼äµÄĞ´·¨:
+3.æ—¶é—´çš„å†™æ³•:
 v_sql := v_sql || ' and logtime >= to_date(:logtime, '|| ' ''yyyy-mm-dd hh24:mi:ss'')';
   
-4.orµÄĞ´·¨:
+4.orçš„å†™æ³•:
 if (str_object is not null) then
     l_str_object := str_object;
     v_sql := v_sql || ' and ( objectid = :objectid or objectname = :objectname )';
@@ -43,27 +43,27 @@ else
     v_sql := v_sql || ' and ( 1 = :objectid  or 1 = :objectname ) ';
 end if;
 
-×¢Òâ: ´ËÊ±ÔÚusing ÖĞl_str_objectÒªĞ´Á½¸ö
+æ³¨æ„: æ­¤æ—¶åœ¨using ä¸­l_str_objectè¦å†™ä¸¤ä¸ª
 
-5.×Ö·û´®µÄĞ´·¨:('|| ×Ö·û´® ||')
-¾ÙÀı: 
---1.trimºÍrtrim
+5.å­—ç¬¦ä¸²çš„å†™æ³•:('|| å­—ç¬¦ä¸² ||')
+ä¸¾ä¾‹: 
+--1.trimå’Œrtrim
 v_sql := v_sql || ' and status in (' || ltrim(rtrim(str_status, ','), ',') || ') ';
---2.×Ö·û´®
+--2.å­—ç¬¦ä¸²
 v_sql := ' select netname from t_cms_netconf where netid = ' || str_netid || ' order by 1 ';
 --3.in
 v_sql := ' t.status in (' || rtrim(str_status, ',') || ')'
 --4.instr
 v_sql := v_sql || ' and instr(''|'' || b.typelist || ''|'', ''|'' || :typelist || ''|'') > 0';
 
-6.Êı×ÖµÄĞ´·¨: ||Êı×Ö
-¾ÙÀı: v_sql := v_sql || ' and handletimes < ' || f_ums_config_in_qr('deploy/cms/task/maxsend', 5);
+6.æ•°å­—çš„å†™æ³•: ||æ•°å­—
+ä¸¾ä¾‹: v_sql := v_sql || ' and handletimes < ' || f_ums_config_in_qr('deploy/cms/task/maxsend', 5);
 
-7.Êı×éµÄĞ´·¨:
-sqlÖĞµÄĞ´·¨:returning transactionid into :arr_tranactionid 
-usingÖĞµÄĞ´·¨:returning bulk collect into v_arr_tranactionid   --v_arr_tranactionid¶¨ÒåµÄÁÙÊ±±äÁ¿
+7.æ•°ç»„çš„å†™æ³•:
+sqlä¸­çš„å†™æ³•:returning transactionid into :arr_tranactionid 
+usingä¸­çš„å†™æ³•:returning bulk collect into v_arr_tranactionid   --v_arr_tranactionidå®šä¹‰çš„ä¸´æ—¶å˜é‡
                   
-8.likeµÄÓÃ·¨¼°%ºÍ_µÄ´¦Àí
+8.likeçš„ç”¨æ³•åŠ%å’Œ_çš„å¤„ç†
 --1.
     if (str_specialname is not null) then
         l_str_specialname := '%' || lower(str_specialname) || '%';
@@ -98,10 +98,10 @@ usingÖĞµÄĞ´·¨:returning bulk collect into v_arr_tranactionid   --v_arr_tranactio
         v_sql := v_sql || ' and 1 = :tapecopyright ';
     end if;
  
---¾­²âÊÔ,Á½ÕßĞ´·¨¾ù¿É.
+--ç»æµ‹è¯•,ä¸¤è€…å†™æ³•å‡å¯.
 
-9.Ò³ÃæÉÏÑ¡Ôñ"°´Ê±¼äÅÅĞò"µÄÊı¾İ¿â´¦Àí·½·¨         
---°´ĞŞ¸ÄÊ±¼äÅÅĞò. 1-Ê±¼äË³Ğò£¬2-Ê±¼äµ¹Ğò
+9.é¡µé¢ä¸Šé€‰æ‹©"æŒ‰æ—¶é—´æ’åº"çš„æ•°æ®åº“å¤„ç†æ–¹æ³•         
+--æŒ‰ä¿®æ”¹æ—¶é—´æ’åº. 1-æ—¶é—´é¡ºåºï¼Œ2-æ—¶é—´å€’åº
 if ( i_sortorder = 2 ) then
     v_sql := v_sql || ' order by a.createtime desc, a.copyrightid ';
 else

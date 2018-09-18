@@ -1,13 +1,13 @@
---²éÑ¯º¬ÓĞµ¥ÒıºÅµÄ×Ö¶Î
+--æŸ¥è¯¢å«æœ‰å•å¼•å·çš„å­—æ®µ
 select * from tb_dict_province_0a
 where regexp_like(tc_name,'['''']+');
 
---Ìæ»»
+--æ›¿æ¢
 select tc_name,
        replace(tc_name,chr(39),' ') as tc_name2
        from tb_dict_province_0a
 where tc_rowid = 97
 
 update tb_dict_province_0a
-set tc_name = replace(tc_name,chr(39),'¡¯') 
+set tc_name = replace(tc_name,chr(39),'â€™') 
 where tc_rowid = 97

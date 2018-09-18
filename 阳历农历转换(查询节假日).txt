@@ -1,14 +1,14 @@
 
 
-/*1.½«ÈÕÆÚ×ª»»³ÉÅ©ÀúµÄ±í*/ 
+/*1.å°†æ—¥æœŸè½¬æ¢æˆå†œåŽ†çš„è¡¨*/ 
 CREATE TABLE tb_SolarData_0a
 (
-tc_YearID INTEGER NOT NULL, -- Å©Àú±í
-tc_DATA CHAR(7) NOT NULL, -- Å©ÀúÄê¶ÔÓ¦µÄ16½øÖÆÊý
-tc_DataInt INTEGER NOT NULL -- Å©ÀúÄê¶ÔÓ¦µÄ10½øÖÆÊý
+tc_YearID INTEGER NOT NULL, -- å†œåŽ†è¡¨
+tc_DATA CHAR(7) NOT NULL, -- å†œåŽ†å¹´å¯¹åº”çš„16è¿›åˆ¶æ•°
+tc_DataInt INTEGER NOT NULL -- å†œåŽ†å¹´å¯¹åº”çš„10è¿›åˆ¶æ•°
 );
 
---2.Äê·Ý±àÂë
+--2.å¹´ä»½ç¼–ç 
 INSERT INTO tb_SolarData_0a VALUES(1900, '0x04bd8', 19416);
 
 INSERT INTO tb_SolarData_0a VALUES(1901, '0x04ae0', 19168);
@@ -311,50 +311,50 @@ INSERT INTO tb_SolarData_0a VALUES(2049, '0x0ada0', 44448);
 
 COMMIT;
 
---3.ÑôÀú×ªÒõÀúº¯Êý
+--3.é˜³åŽ†è½¬é˜´åŽ†å‡½æ•°
 F_GET_NONGLI
 
 CREATE OR REPLACE FUNCTION F_GET_NONGLI(A_SOLARDAY DATE)
 
  RETURN VARCHAR2
-/*Å©Àú×ªÒõÀúº¯Êý
-  -- ¹¦ÄÜ£º¼ÆËãÑôÀú1900/01/31 - 2050/01/22¼äÄ³Ò»Ìì¶ÔÓ¦µÄÒõÀúÊÇ¶àÉÙ
+/*å†œåŽ†è½¬é˜´åŽ†å‡½æ•°
+  -- åŠŸèƒ½ï¼šè®¡ç®—é˜³åŽ†1900/01/31 - 2050/01/22é—´æŸä¸€å¤©å¯¹åº”çš„é˜´åŽ†æ˜¯å¤šå°‘
 
-  -- Ëã·¨£ºÔÚÒ»ÕÅ±íÖÐÓÃ10½øÖÆ¸ñÊ½±£´æÄ³¸öÅ©ÀúÄêÃ¿ÔÂ´óÐ¡,ÓÐÎÞÈòÔÂ,ÈòÔÂ´óÐ¡ÐÅÏ¢
+  -- ç®—æ³•ï¼šåœ¨ä¸€å¼ è¡¨ä¸­ç”¨10è¿›åˆ¶æ ¼å¼ä¿å­˜æŸä¸ªå†œåŽ†å¹´æ¯æœˆå¤§å°,æœ‰æ— é—°æœˆ,é—°æœˆå¤§å°ä¿¡æ¯
 
-  --           1.ÓÃ12¸ö2½øÖÆÎ»À´±íÊ¾Ä³¸öÅ©ÀúÄêÃ¿ÔÂµÄ´óÐ¡£¬´óÔÂ¼ÇÎª1£¬·ñÔòÎª0
+  --           1.ç”¨12ä¸ª2è¿›åˆ¶ä½æ¥è¡¨ç¤ºæŸä¸ªå†œåŽ†å¹´æ¯æœˆçš„å¤§å°ï¼Œå¤§æœˆè®°ä¸º1ï¼Œå¦åˆ™ä¸º0
 
-  --           2.ÓÃµÍ4Î»À´±íÊ¾ÈòÔÂµÄÔÂ·Ý£¬Ã»ÓÐÈòÔÂ¼ÇÎª0
+  --           2.ç”¨ä½Ž4ä½æ¥è¡¨ç¤ºé—°æœˆçš„æœˆä»½ï¼Œæ²¡æœ‰é—°æœˆè®°ä¸º0
 
-  --           3.ÓÃÒ»¸ö¸ßÎ»±íÊ¾ÈòÔÂµÄ´óÐ¡£¬ÈòÔÂ´ó¼ÇÎª0£¬ÈòÔÂÐ¡»òÎÞÈòÔÂ¼ÇÎª0
+  --           3.ç”¨ä¸€ä¸ªé«˜ä½è¡¨ç¤ºé—°æœˆçš„å¤§å°ï¼Œé—°æœˆå¤§è®°ä¸º0ï¼Œé—°æœˆå°æˆ–æ— é—°æœˆè®°ä¸º0
 
-  --           4.ÔÙ½«¸Ã2½øÖÆÊý×ª»¯Îª10½øÖÆ£¬´æÈë±íÖÐ
+  --           4.å†å°†è¯¥2è¿›åˆ¶æ•°è½¬åŒ–ä¸º10è¿›åˆ¶ï¼Œå­˜å…¥è¡¨ä¸­
 
-  --       Å©Àú2000Äê: 0 110010010110 0000 -> 0x0c960 -> 51552
+  --       å†œåŽ†2000å¹´: 0 110010010110 0000 -> 0x0c960 -> 51552
 
-  --       Å©Àú2001Äê: 0 110110010101 0100 -> 0x0d954 -> 55636
+  --       å†œåŽ†2001å¹´: 0 110110010101 0100 -> 0x0d954 -> 55636
 
-  --       ²ÉÓÃ²é±íµÄ·½Ê½¼ÆËã³öÅ©ÀúÈÕÆÚ
+  --       é‡‡ç”¨æŸ¥è¡¨çš„æ–¹å¼è®¡ç®—å‡ºå†œåŽ†æ—¥æœŸ
 
-  -- ×÷Õß£ºkai 2013-04-09(ÍøÉÏÊÕ¼¯)
+  -- ä½œè€…ï¼škai 2013-04-09(ç½‘ä¸Šæ”¶é›†)
   */
  AS
 
   V_OFFSET INT;
 
-  V_LUNAR INT; -- Å©ÀúÄêÊÇ·ñº¬ÈòÔÂ,¼¸ÔÂÊÇÈòÔÂ,ÈòÔÂÌìÊý,ÆäËüÔÂÌìÊý
+  V_LUNAR INT; -- å†œåŽ†å¹´æ˜¯å¦å«é—°æœˆ,å‡ æœˆæ˜¯é—°æœˆ,é—°æœˆå¤©æ•°,å…¶å®ƒæœˆå¤©æ•°
 
-  V_YEARDAYS INT; -- Å©ÀúÄêËùº¬ÌìÊý
+  V_YEARDAYS INT; -- å†œåŽ†å¹´æ‰€å«å¤©æ•°
 
-  V_MONTHDAYS INT; -- Å©ÀúÔÂËùº¬ÌìÊý
+  V_MONTHDAYS INT; -- å†œåŽ†æœˆæ‰€å«å¤©æ•°
 
-  V_LEAPMONTHDAYS INT; -- Å©ÀúÈòÔÂËùº¬ÌìÊý
+  V_LEAPMONTHDAYS INT; -- å†œåŽ†é—°æœˆæ‰€å«å¤©æ•°
 
-  V_LEAPMONTH INT; -- Å©ÀúÄêÈòÄÄ¸öÔÂ 1-12 , Ã»Èò´«»Ø 0
+  V_LEAPMONTH INT; -- å†œåŽ†å¹´é—°å“ªä¸ªæœˆ 1-12 , æ²¡é—°ä¼ å›ž 0
 
-  V_LEAPFLAG INT; -- Ä³Å©ÀúÔÂÊÇ·ñÎªÈòÔÂ  1:ÊÇ  0:²»ÊÇ
+  V_LEAPFLAG INT; -- æŸå†œåŽ†æœˆæ˜¯å¦ä¸ºé—°æœˆ  1:æ˜¯  0:ä¸æ˜¯
 
-  V_MONTHNO INT; -- Ä³Å©ÀúÔÂËù¶ÔÓ¦µÄ2½øÖÆÊý ÈçÅ©Àú3ÔÂ: 001000000000
+  V_MONTHNO INT; -- æŸå†œåŽ†æœˆæ‰€å¯¹åº”çš„2è¿›åˆ¶æ•° å¦‚å†œåŽ†3æœˆ: 001000000000
 
   I INT;
 
@@ -362,13 +362,13 @@ CREATE OR REPLACE FUNCTION F_GET_NONGLI(A_SOLARDAY DATE)
 
   K INT;
 
-  V_YEAR INT; -- A_SOLARDAY ¶ÔÓ¦µÄÅ©ÀúÄê
+  V_YEAR INT; -- A_SOLARDAY å¯¹åº”çš„å†œåŽ†å¹´
 
-  V_MONTH INT; -- A_SOLARDAY ¶ÔÓ¦µÄÅ©ÀúÔÂ
+  V_MONTH INT; -- A_SOLARDAY å¯¹åº”çš„å†œåŽ†æœˆ
 
-  V_DAY INT; -- A_SOLARDAY ¶ÔÓ¦µÄÅ©ÀúÈÕ
+  V_DAY INT; -- A_SOLARDAY å¯¹åº”çš„å†œåŽ†æ—¥
 
-  O_OUTPUTDATE VARCHAR2(25); -- ·µ»ØÖµ  ¸ñÊ½£ºÅ©Àú ****Äê **(Èò)ÔÂ **ÈÕ
+  O_OUTPUTDATE VARCHAR2(25); -- è¿”å›žå€¼  æ ¼å¼ï¼šå†œåŽ† ****å¹´ **(é—°)æœˆ **æ—¥
 
   E_ERRMSG VARCHAR2(200);
 
@@ -376,7 +376,7 @@ CREATE OR REPLACE FUNCTION F_GET_NONGLI(A_SOLARDAY DATE)
 
 BEGIN
 
-  --ÊäÈë²ÎÊýÅÐ¶Ï
+  --è¾“å…¥å‚æ•°åˆ¤æ–­
 
   IF A_SOLARDAY < TO_DATE('2000-01-31', 'yyyy-mm-dd') OR
      A_SOLARDAY >= TO_DATE('2050-01-23', 'yyyy-mm-dd') THEN
@@ -385,38 +385,38 @@ BEGIN
 
   END IF;
 
-  -- A_SOLARDAY µ½ 1900-01-30(¼´Å©Àú1900-01-01µÄÇ°Ò»Ìì) µÄÌìÊý
+  -- A_SOLARDAY åˆ° 1900-01-30(å³å†œåŽ†1900-01-01çš„å‰ä¸€å¤©) çš„å¤©æ•°
 
   V_OFFSET := TRUNC(A_SOLARDAY, 'dd') - TO_DATE('1900-01-30', 'yyyy-mm-dd');
 
-  -- È·¶¨Å©ÀúÄê¿ªÊ¼
+  -- ç¡®å®šå†œåŽ†å¹´å¼€å§‹
 
   I := 1900;
 
   WHILE I < 2050 AND V_OFFSET > 0 LOOP
 
-    V_YEARDAYS := 348; --  29*12 ÒÔÃ¿Äê12¸öÅ©ÀúÔÂ,Ã¿¸öÅ©ÀúÔÂº¬29¸öÅ©ÀúÈÕÎª»ùÊý
+    V_YEARDAYS := 348; --  29*12 ä»¥æ¯å¹´12ä¸ªå†œåŽ†æœˆ,æ¯ä¸ªå†œåŽ†æœˆå«29ä¸ªå†œåŽ†æ—¥ä¸ºåŸºæ•°
 
     V_LEAPMONTHDAYS := 0;
 
-    -- È¡³öÅ©ÀúÄêÊÇ·ñº¬ÈòÔÂ,¼¸ÔÂÊÇÈòÔÂ,ÈòÔÂÌìÊý,ÆäËüÔÂÌìÊý
+    -- å–å‡ºå†œåŽ†å¹´æ˜¯å¦å«é—°æœˆ,å‡ æœˆæ˜¯é—°æœˆ,é—°æœˆå¤©æ•°,å…¶å®ƒæœˆå¤©æ•°
 
-    -- ÈçÅ©Àú2001Äê: 0x0d954(16½øÖÆ) -> 55636(10½øÖÆ) -> 0 110110010101 0100(2½øÖÆ)
+    -- å¦‚å†œåŽ†2001å¹´: 0x0d954(16è¿›åˆ¶) -> 55636(10è¿›åˆ¶) -> 0 110110010101 0100(2è¿›åˆ¶)
 
-    -- 1,2,4,5,8,10,12ÔÂ´ó, 3,6,7,9,11ÔÂÐ¡, 4ÔÂÎªÈòÔÂ£¬ÈòÔÂÐ¡
+    -- 1,2,4,5,8,10,12æœˆå¤§, 3,6,7,9,11æœˆå°, 4æœˆä¸ºé—°æœˆï¼Œé—°æœˆå°
 
     SELECT TC_DATAINT INTO V_LUNAR FROM TB_SOLARDATA_0A WHERE TC_YEARID = I;
 
-    -- ´«»ØÅ©ÀúÄêµÄ×ÜÌìÊý
+    -- ä¼ å›žå†œåŽ†å¹´çš„æ€»å¤©æ•°
 
     J := 32768; --   100000000000 0000 -> 32768
 
-    -- 0 110110010101 0100 -> 55636(Å©Àú2001Äê)
+    -- 0 110110010101 0100 -> 55636(å†œåŽ†2001å¹´)
 
-    -- ÒÀ´ÎÅÐ¶Ïv_lunarÄê¸öÔÂÊÇ·ñÎª´óÔÂ£¬ÊÇÔò¼ÓÒ»Ìì
+    -- ä¾æ¬¡åˆ¤æ–­v_lunarå¹´ä¸ªæœˆæ˜¯å¦ä¸ºå¤§æœˆï¼Œæ˜¯åˆ™åŠ ä¸€å¤©
 
     WHILE J > 8 LOOP
-      -- ÈòÔÂÁíÐÐÅÐ¶Ï 8 -> 0 000000000000 1000
+      -- é—°æœˆå¦è¡Œåˆ¤æ–­ 8 -> 0 000000000000 1000
 
       IF BITAND(V_LUNAR, J) + 0 > 0 THEN
 
@@ -424,19 +424,19 @@ BEGIN
 
       END IF;
 
-      J := J / 2; -- ÅÐ¶ÏÏÂÒ»¸öÔÂÊÇ·ñÎª´ó
+      J := J / 2; -- åˆ¤æ–­ä¸‹ä¸€ä¸ªæœˆæ˜¯å¦ä¸ºå¤§
 
     END LOOP;
 
-    -- ´«»ØÅ©ÀúÄêÈòÄÄ¸öÔÂ 1-12 , Ã»Èò´«»Ø 0   15 -> 1 0000
+    -- ä¼ å›žå†œåŽ†å¹´é—°å“ªä¸ªæœˆ 1-12 , æ²¡é—°ä¼ å›ž 0   15 -> 1 0000
 
     V_LEAPMONTH := BITAND(V_LUNAR, 15) + 0;
 
-    -- ´«»ØÅ©ÀúÄêÈòÔÂµÄÌìÊý ,¼ÓÔÚÄêµÄ×ÜÌìÊýÉÏ
+    -- ä¼ å›žå†œåŽ†å¹´é—°æœˆçš„å¤©æ•° ,åŠ åœ¨å¹´çš„æ€»å¤©æ•°ä¸Š
 
     IF V_LEAPMONTH > 0 THEN
 
-      -- ÅÐ¶ÏÈòÔÂ´óÐ¡ 65536 -> 1 000000000000 0000
+      -- åˆ¤æ–­é—°æœˆå¤§å° 65536 -> 1 000000000000 0000
 
       IF BITAND(V_LUNAR, 65536) + 0 > 0 THEN
 
@@ -460,7 +460,7 @@ BEGIN
 
   IF V_OFFSET <= 0 THEN
 
-    -- A_SOLARDAY ÔÚËùÊôÅ©ÀúÄê(¼´iÄê)ÖÐµÄµÚ v_offset Ìì
+    -- A_SOLARDAY åœ¨æ‰€å±žå†œåŽ†å¹´(å³iå¹´)ä¸­çš„ç¬¬ v_offset å¤©
 
     V_OFFSET := V_OFFSET + V_YEARDAYS;
 
@@ -468,19 +468,19 @@ BEGIN
 
   END IF;
 
-  -- È·¶¨Å©ÀúÄê½áÊø
+  -- ç¡®å®šå†œåŽ†å¹´ç»“æŸ
 
   V_YEAR := I;
 
-  -- È·¶¨Å©ÀúÔÂ¿ªÊ¼
+  -- ç¡®å®šå†œåŽ†æœˆå¼€å§‹
 
   I := 1;
 
   SELECT TC_DATAINT INTO V_LUNAR FROM TB_SOLARDATA_0A WHERE TC_YEARID = V_YEAR;
 
-  -- ÅÐ¶ÏÄÇ¸öÔÂÊÇÈóÔÂ
+  -- åˆ¤æ–­é‚£ä¸ªæœˆæ˜¯æ¶¦æœˆ
 
-  -- ÈçÅ©Àú2001Äê (55636,15 -> 0 1101100101010100, 1111 -> 4) ¼´Èó4ÔÂ,ÇÒÈòÔÂÐ¡
+  -- å¦‚å†œåŽ†2001å¹´ (55636,15 -> 0 1101100101010100, 1111 -> 4) å³æ¶¦4æœˆ,ä¸”é—°æœˆå°
 
   V_LEAPMONTH := BITAND(V_LUNAR, 15) + 0;
 
@@ -488,21 +488,21 @@ BEGIN
 
   WHILE I < 13 AND V_OFFSET > 0 LOOP
 
-    -- ÅÐ¶ÏÊÇ·ñÎªÈòÔÂ
+    -- åˆ¤æ–­æ˜¯å¦ä¸ºé—°æœˆ
 
     V_MONTHDAYS := 0;
 
     IF (V_LEAPMONTH > 0 AND I = (V_LEAPMONTH + 1) AND V_LEAPFLAG = 0) THEN
 
-      -- ÊÇÈòÔÂ
+      -- æ˜¯é—°æœˆ
 
       I := I - 1;
 
-      K := I; -- ±£´æÊÇÈòÔÂµÄÊ±iµÄÖµ
+      K := I; -- ä¿å­˜æ˜¯é—°æœˆçš„æ—¶içš„å€¼
 
       V_LEAPFLAG := 1;
 
-      -- ´«»ØÅ©ÀúÄêÈòÔÂµÄÌìÊý
+      -- ä¼ å›žå†œåŽ†å¹´é—°æœˆçš„å¤©æ•°
 
       IF BITAND(V_LUNAR, 65536) + 0 > 0 THEN
 
@@ -516,13 +516,13 @@ BEGIN
 
     ELSE
 
-      -- ²»ÊÇÈòÔÂ
+      -- ä¸æ˜¯é—°æœˆ
 
       J := 1;
 
       V_MONTHNO := 65536;
 
-      -- ¼ÆËã i ÔÂ¶ÔÓ¦µÄ2½øÖÆÊý ÈçÅ©Àú3ÔÂ: 001000000000
+      -- è®¡ç®— i æœˆå¯¹åº”çš„2è¿›åˆ¶æ•° å¦‚å†œåŽ†3æœˆ: 001000000000
 
       WHILE J <= I LOOP
 
@@ -532,7 +532,7 @@ BEGIN
 
       END LOOP;
 
-      -- ¼ÆËãÅ©Àú v_year Äê i ÔÂµÄÌìÊý
+      -- è®¡ç®—å†œåŽ† v_year å¹´ i æœˆçš„å¤©æ•°
 
       IF BITAND(V_LUNAR, V_MONTHNO) + 0 > 0 THEN
 
@@ -546,7 +546,7 @@ BEGIN
 
     END IF;
 
-    -- ½â³ýÈòÔÂ
+    -- è§£é™¤é—°æœˆ
 
     IF V_LEAPFLAG = 1 AND I = V_LEAPMONTH + 1 THEN
 
@@ -562,7 +562,7 @@ BEGIN
 
   IF V_OFFSET <= 0 THEN
 
-    -- A_SOLARDAY ÔÚËùÊôÅ©ÀúÔÂ(¼´iÔÂ)ÖÐµÄµÚ v_offset Ìì
+    -- A_SOLARDAY åœ¨æ‰€å±žå†œåŽ†æœˆ(å³iæœˆ)ä¸­çš„ç¬¬ v_offset å¤©
 
     V_OFFSET := V_OFFSET + V_MONTHDAYS;
 
@@ -570,15 +570,15 @@ BEGIN
 
   END IF;
 
-  -- È·¶¨Å©ÀúÔÂ½áÊø
+  -- ç¡®å®šå†œåŽ†æœˆç»“æŸ
 
   V_MONTH := I;
 
-  -- È·¶¨Å©ÀúÈÕ½áÊø
+  -- ç¡®å®šå†œåŽ†æ—¥ç»“æŸ
 
   V_DAY := V_OFFSET;
 
-  -- ¸ñÊ½»¯·µ»ØÖµ
+  -- æ ¼å¼åŒ–è¿”å›žå€¼
 
   O_OUTPUTDATE := TO_CHAR(V_YEAR);
 
@@ -600,7 +600,7 @@ EXCEPTION
 
   WHEN E_ERRDATE THEN
 
-    RETURN 'ÈÕÆÚ´íÎó! ÓÐÐ§·¶Î§(ÑôÀú): 1900/01/31 - 2050/01/22';
+    RETURN 'æ—¥æœŸé”™è¯¯! æœ‰æ•ˆèŒƒå›´(é˜³åŽ†): 1900/01/31 - 2050/01/22';
 
   WHEN OTHERS THEN
 
@@ -610,13 +610,13 @@ EXCEPTION
 
 END;
 
---4.½¨Á¢ÑôÀú_ÒõÀú±í
+--4.å»ºç«‹é˜³åŽ†_é˜´åŽ†è¡¨
 create table tb_yangli_yinli_0a(tc_yangli date,
              tc_yinli varchar2(10),
              tc_weekdate VARCHAR2(10),
              tc_type VARCHAR2(1))
 
---5.µ÷ÓÃº¯Êý²åÈëËùÓÐµÄÊý¾Ý(Í¨¹ýÑ­»·»ñµÃ2000Äêµ½2049ÄêµÄÊý¾Ý)
+--5.è°ƒç”¨å‡½æ•°æ’å…¥æ‰€æœ‰çš„æ•°æ®(é€šè¿‡å¾ªçŽ¯èŽ·å¾—2000å¹´åˆ°2049å¹´çš„æ•°æ®)
 INSERT INTO TB_YANGLI_YINLI_0A(tc_yangli,tc_yinli,tc_weekdate,tc_type)
   SELECT TRUNC(TO_DATE('2000-01-01', 'yyyy-mm-dd')) + ROWNUM - 1 AS DATES,
          F_GET_NONGLI(TRUNC(TO_DATE('2000-01-01', 'yyyy-mm-dd')) + ROWNUM - 1) AS DATES2, 

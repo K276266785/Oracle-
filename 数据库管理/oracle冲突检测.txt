@@ -1,4 +1,4 @@
-检查互锁情况（包括对应的sql语句）：
+妫�鏌ヤ簰閿佹儏鍐碉紙鍖呮嫭瀵瑰簲鐨剆ql璇彞锛夛細
 --
 -- :BLOCKING LOCKS:
 --
@@ -63,5 +63,5 @@ and bs.sql_address = sa.address
 and (bs.username is not null) and (bs.username <> 'SYSTEM') and (bs.username <> 'SYS')
 order by 1;
 
-刚才发现了一条冲突的sql：（应该跟电商出货无关，有空关注一下）
+鍒氭墠鍙戠幇浜嗕竴鏉″啿绐佺殑sql锛氾紙搴旇璺熺數鍟嗗嚭璐ф棤鍏筹紝鏈夌┖鍏虫敞涓�涓嬶級
 SELECT COUNT(1) FROM USER_TABLES WHERE TABLE_NAME = :B1 

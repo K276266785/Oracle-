@@ -1,18 +1,18 @@
---×¢Òâ:Ö»ÄÜ·ÃÎÊ·şÎñÆ÷±¾µØÎÄ¼ş
+--æ³¨æ„:åªèƒ½è®¿é—®æœåŠ¡å™¨æœ¬åœ°æ–‡ä»¶
 
---1´´½¨Ò»¸ödirectory
+--1åˆ›å»ºä¸€ä¸ªdirectory
 create or replace directory plu_pic_filename as 'C:\TEMP';
 
---2.Ğ´txtÎÄ¼ş
-declare filehandle utl_file.file_type;--¾ä±ú
+--2.å†™txtæ–‡ä»¶
+declare filehandle utl_file.file_type;--å¥æŸ„
 begin
 filehandle := utl_file.fopen('plu_pic_filename','test1.txt','w');
 utl_file.put_line(filehandle,'hello oracle!');
-utl_file.put_line(filehandle,'ÄãºÃ£¬ÅÖ×Ó!');
-utl_file.fclose(filehandle);--¹Ø±Õ¾ä±ú
+utl_file.put_line(filehandle,'ä½ å¥½ï¼Œèƒ–å­!');
+utl_file.fclose(filehandle);--å…³é—­å¥æŸ„
 end;
 
---3.¶ÁÈ¡txtÎÄ¼ş
+--3.è¯»å–txtæ–‡ä»¶
 /*set serveroutput ON*/
 DECLARE
   filehandle utl_file.file_type;

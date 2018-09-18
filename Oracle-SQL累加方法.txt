@@ -28,7 +28,7 @@ select t.*,
 sum(t.salary) over (partition BY t.username ORDER BY t.salary) as sum_day
 from User_Salary t
 
---µ¥ÁĞÀÛ¼Ó
+--å•åˆ—ç´¯åŠ 
 sum(t.tc_value) over (ORDER BY tc_date) as tc_svalue
     
 drop table User_Salary

@@ -1,10 +1,10 @@
---²éÑ¯³¤Ê±¼äSQLÓï¾äºÄÊ±Á¿
+--æŸ¥è¯¢é•¿æ—¶é—´SQLè¯­å¥è€—æ—¶é‡
 select l.opname, l.target, l.elapsed_seconds, l.time_remaining, s.sql_text
   from v$session_longops l, v$sqlarea s
  where l.sql_address = s.address
  order by l.elapsed_seconds desc;
 
---²é¿´ÅÅ¶Ó½ø³Ì£¨ºÏ¼Æ£©
+--æŸ¥çœ‹æ’é˜Ÿè¿›ç¨‹ï¼ˆåˆè®¡ï¼‰
 select count(1)
   from v$locked_object l, v$session s, all_objects o, v$process p
  where p.addr = s.paddr
@@ -18,7 +18,7 @@ select count(1)
           s.serial#,
           o.object_name;
 
---²é¿´ÅÅ¶Ó½ø³Ì(Çåµ¥)          
+--æŸ¥çœ‹æ’é˜Ÿè¿›ç¨‹(æ¸…å•)          
 select l.os_user_name as client_os_user_name,
        l.oracle_username,
        l.session_id,
@@ -38,7 +38,7 @@ select l.os_user_name as client_os_user_name,
           s.serial#,
           o.object_name;
 
---Éú³ÉÉ±ËÀËø¶¨¶ÔÏóSQL
+--ç”Ÿæˆæ€æ­»é”å®šå¯¹è±¡SQL
 select distinct s.sid,
        s.machine,
        o.object_name,
@@ -52,7 +52,7 @@ select distinct s.sid,
 
 --=========================================================================
 --=========================================================================
---oracleÖĞÈ¥³ı×Ö¶ÎÖĞµÄ»Ø³µ·û
+--oracleä¸­å»é™¤å­—æ®µä¸­çš„å›è½¦ç¬¦
 /*update ywj_yxglobj
    set table_name = replace(table_name, chr(10), '')
  where table_name like 'ACCT_INFO%';*/

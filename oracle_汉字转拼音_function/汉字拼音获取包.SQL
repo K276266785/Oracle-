@@ -1,8 +1,8 @@
 CREATE OR REPLACE package CHINA.GetHZPY is
 
   -- Author  : ADMINISTRATOR
-  -- Created : 2006-10-8 ÉÏÎç 11:51:16
-  -- Purpose : »ñµÃºº×ÖÆ´Òô±àÂë
+  -- Created : 2006-10-8 ä¸Šåˆ 11:51:16
+  -- Purpose : è·å¾—æ±‰å­—æ‹¼éŸ³ç¼–ç 
   
   -- Public type declarations
   TYPE THZPY_LIST is VARRAY (526) OF  VARCHAR2(6);

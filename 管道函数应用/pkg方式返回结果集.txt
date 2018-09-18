@@ -1,23 +1,23 @@
 create or replace package pkg_test as
   type myrctype is ref cursor;
   function f_get_Store(a_store_rowid number) return myrctype;
-  procedure p_get_Store(a_store_rowid number, p_rc out myrctype); --PackageÖĞÉùÃ÷ÃûÎªget µÄProcedure(Ö»ÓĞ½Ó¿ÚÃ»ÄÚÈİ) 
+  procedure p_get_Store(a_store_rowid number, p_rc out myrctype); --Packageä¸­å£°æ˜åä¸ºget çš„Procedure(åªæœ‰æ¥å£æ²¡å†…å®¹) 
 end pkg_test;
 
 create or replace package body pkg_test as
   --FNC
   function f_get_Store(a_store_rowid number) return myrctype is
-    rc     myrctype; --¶¨Òåref cursor±äÁ¿
+    rc     myrctype; --å®šä¹‰ref cursorå˜é‡
     sqlstr varchar2(500);
   begin
     if a_store_rowid = 0 then
-      --¾²Ì¬²âÊÔ£¬Ö±½ÓÓÃselectÓï¾äÖ±½Ó·µ»Ø½á¹û
+      --é™æ€æµ‹è¯•ï¼Œç›´æ¥ç”¨selectè¯­å¥ç›´æ¥è¿”å›ç»“æœ
       open rc for
         select tc_rowid, tc_code, tc_name from tb_store_0a;
     else
-      --¶¯Ì¬sql¸³Öµ£¬ÓÃ:w_idÀ´ÉêÃ÷¸Ã±äÁ¿´ÓÍâ²¿»ñµÃ
+      --åŠ¨æ€sqlèµ‹å€¼ï¼Œç”¨:w_idæ¥ç”³æ˜è¯¥å˜é‡ä»å¤–éƒ¨è·å¾—
       sqlstr := 'select tc_rowid,tc_code,tc_name from tb_store_0a where tc_rowid=:w_id';
-      --¶¯Ì¬²âÊÔ£¬ÓÃsqlstr×Ö·û´®·µ»Ø½á¹û£¬ÓÃusing¹Ø¼ü´Ê´«µİ²ÎÊı
+      --åŠ¨æ€æµ‹è¯•ï¼Œç”¨sqlstrå­—ç¬¦ä¸²è¿”å›ç»“æœï¼Œç”¨usingå…³é”®è¯ä¼ é€’å‚æ•°
       open rc for sqlstr
         using a_store_rowid;
     end if;

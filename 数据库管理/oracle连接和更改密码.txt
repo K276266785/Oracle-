@@ -1,13 +1,13 @@
-1.²»ÓÃÃÜÂëµÇÂ¼
+1.ä¸ç”¨å¯†ç ç™»å½•
 sqlplus /nolog
-2.Á¬½Ó
+2.è¿æ¥
 connect sys/oracle as sysdba
 connect system/oracle
-3.½âËøÓÃ»§
+3.è§£é”ç”¨æˆ·
 alter user system account unlock;
-4.ĞŞ¸ÄÓÃ»§systemÃÜÂëÎª:manager
+4.ä¿®æ”¹ç”¨æˆ·systemå¯†ç ä¸º:manager
 alter user system identified by manager;
-5.Á¬½ÓÒÑ¸ü¸ÄÎª£º
+5.è¿æ¥å·²æ›´æ”¹ä¸ºï¼š
 connect system/manager
-6.²é¿´ÓÃ»§ÃûºÍÃÜÂë£º
+6.æŸ¥çœ‹ç”¨æˆ·åå’Œå¯†ç ï¼š
 select username,password from dba_users;

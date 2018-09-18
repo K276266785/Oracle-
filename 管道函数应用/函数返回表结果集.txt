@@ -9,7 +9,7 @@ create or replace type Type_Row_Test as object
 create or replace type Type_Table_Test  as table of Type_Row_Test
 
 CREATE OR REPLACE FUNCTION F_Test(pIdIn number) return Type_Table_Test
-  pipelined --¹ÜµÀ
+  pipelined --ç®¡é“
  as
   v Type_Row_Test;
 begin
@@ -29,13 +29,13 @@ create type row_type as object
 (
   a varchar2(10),
   v varchar2(10)
-); --¶¨ÒåĞĞ¶ÔÏó
+); --å®šä¹‰è¡Œå¯¹è±¡
 
 --demo2
-create type table_type as table of row_type; --¶¨Òå±í¶ÔÏó
+create type table_type as table of row_type; --å®šä¹‰è¡¨å¯¹è±¡
 
 create or replace function test_fun(a in varchar2, b in varchar2)
-  return table_type pipelined is v row_type; --¶¨ÒåvÎªĞĞ¶ÔÏóÀàĞÍ
+  return table_type pipelined is v row_type; --å®šä¹‰vä¸ºè¡Œå¯¹è±¡ç±»å‹
 begin
   for thisrow in (select a, b
                     from mytable

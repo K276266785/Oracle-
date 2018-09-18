@@ -3,11 +3,11 @@ create or replace procedure P_CREATE_TMPP_TABLE_BRO(a_select_sql varchar2,
   v_sql      varchar2(30000);
   v_theCount number;
   /*
-  --Ä£¿é¹¦ÄÜ£º¸ù¾İ½á¹û¼¯Éú³ÉÁÙÊ±Êı¾İ±í£¬µÈÍ¬SQL ServerµÄ[select into±í]¹¦ÄÜ
+  --æ¨¡å—åŠŸèƒ½ï¼šæ ¹æ®ç»“æœé›†ç”Ÿæˆä¸´æ—¶æ•°æ®è¡¨ï¼Œç­‰åŒSQL Serverçš„[select intoè¡¨]åŠŸèƒ½
   */
 begin
   if (upper(substr(a_table, 0, 5)) <> 'TMPP_') then
-    raise_application_error(-20001, 'Î¥·´ÃüÃû¹æÔò:ÏµÍ³Ö»½ÓÊÜÒÔtmpp_¿ªÍ·ÃüÃûµÄÁÙÊ±±í');
+    raise_application_error(-20001, 'è¿åå‘½åè§„åˆ™:ç³»ç»Ÿåªæ¥å—ä»¥tmpp_å¼€å¤´å‘½åçš„ä¸´æ—¶è¡¨');
   end if;
   
   select count(1)

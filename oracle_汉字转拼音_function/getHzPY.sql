@@ -1,17 +1,17 @@
---��ȡ����ƴ����ƴ������ĸ�Ĺ��ܺ���
---���ߣ�david.liu
+--获取汉字拼音和拼音首字母的功能函数
+--作者：david.liu
 --email/msn: david2068@gmail.com
---���ڣ�2006-10-06 19:00--23:59
---select GetHzFullPY('�л����񹲺͹�') from dual;
---select GetHzPYCAP('�л����񹲺͹�') from dual;
+--日期：2006-10-06 19:00--23:59
+--select GetHzFullPY('中华人民共和国') from dual;
+--select GetHzPYCAP('中华人民共和国') from dual;
 
---����GetHzFullPY(string)���ڻ�ȡ�����ַ�����ƴ��
---select GetHzFullPY('�л����񹲺͹�') from dual;
---���أ�ZhongHuaRenMinGongHeGuo
+--函数GetHzFullPY(string)用于获取汉字字符串的拼音
+--select GetHzFullPY('中华人民共和国') from dual;
+--返回：ZhongHuaRenMinGongHeGuo
 
---����GetHzPYCAP(string)���ڻ�ȡƴ������ĸ
---select GetHzPYCAP('�л����񹲺͹�') from dual;
---����ZHRMGHG
+--函数GetHzPYCAP(string)用于获取拼音首字母
+--select GetHzPYCAP('中华人民共和国') from dual;
+--返回ZHRMGHG
 
 CREATE OR REPLACE TYPE THZPY_LIST AS VARRAY (526) OF  VARCHAR2(6);
 
@@ -1791,7 +1791,7 @@ grant Execute on GetHzPYCAP to public;
 
 
 --EXAMPLE
-select GetHzFullPY('�л����񹲺͹�') from dual;
+select GetHzFullPY('中华人民共和国') from dual;
 /
 
-select GetHzPYCAP('�л����񹲺͹�') from dual;
+select GetHzPYCAP('中华人民共和国') from dual;

@@ -1,24 +1,24 @@
---Ê¹ÓÃ¶¯Ì¬ÓÎ±ê
+--ä½¿ç”¨åŠ¨æ€æ¸¸æ ‡
   DECLARE
     TYPE refcursor IS REF CURSOR;
     v_cursor REFCURSOR;
     v_code         VARCHAR(22);
     v_table_name   VARCHAR(50);
   BEGIN
-    -- ¶¯Ì¬SQL
+    -- åŠ¨æ€SQL
     v_sql := 'select tc_code,tc_table_name from '||V_TMPP_RESULT_0B;
-    -- ´ò¿ªÓÎ±ê.
+    -- æ‰“å¼€æ¸¸æ ‡.
     OPEN v_cursor FOR v_sql;
-    -- Ñ­»·´¦Àí.
+    -- å¾ªç¯å¤„ç†.
     LOOP
-      -- Ìî³äÊı¾İ.
+      -- å¡«å……æ•°æ®.
       FETCH v_cursor INTO v_code,v_table_name;
-      -- ÎŞÊı¾İÊ± ÍË³öÑ­»·.
+      -- æ— æ•°æ®æ—¶ é€€å‡ºå¾ªç¯.
       EXIT WHEN v_cursor%NOTFOUND;
-      -- µ÷ÓÃ¹éµµ
+      -- è°ƒç”¨å½’æ¡£
       P_KAI_close_flag_BRO(v_code,v_table_name);
     END LOOP;
-    -- ¹Ø±ÕÓÎ±ê.
+    -- å…³é—­æ¸¸æ ‡.
     CLOSE v_cursor;
   END;
 
@@ -35,7 +35,7 @@ declare
       loop
         fetch v_cursor into v_code, v_table_name;
         exit when v_cursor%notfound;
-        --µ÷ÓÃ¹éµµ
+        --è°ƒç”¨å½’æ¡£
         p_kai_close_flag_bro(v_code, v_table_name);
       end loop;
       close v_cursor;

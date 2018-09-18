@@ -20,7 +20,7 @@ BEGIN
 
    v_length := LENGTH (p_str);
 
-                                                         --È«Æ´Ê××ÖÄ¸´óĞ´
+                                                         --å…¨æ‹¼é¦–å­—æ¯å¤§å†™
  FOR i IN 1 .. v_length
  LOOP
     v_substr := SUBSTR (p_str, i, 1);
@@ -1471,5 +1471,5 @@ end;
 
 --example
 /*
-select F_GETPY('ÖĞ»ªÈËÃñ¹²ºÍ¹ú') from dual;
+select F_GETPY('ä¸­åäººæ°‘å…±å’Œå›½') from dual;
 */

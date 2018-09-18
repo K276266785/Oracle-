@@ -1,4 +1,4 @@
---ÁÙÊ±±íÁÐ±í½á¹û
+--ä¸´æ—¶è¡¨åˆ—è¡¨ç»“æžœ
   v_sql :='with temp as 
           (select '''||V_TEMP_RESULT_TABLE_0A||'''||'',''||
                   '''||V_TEMP_RESULT_TABLE_0B||'''||'',''||

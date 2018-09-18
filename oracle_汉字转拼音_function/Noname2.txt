@@ -23,7 +23,7 @@ BEGIN
 
    CASE p_flag
       WHEN 1
-      THEN                                                              --ȫƴ��д
+      THEN                                                              --全拼大写
          FOR i IN 1 .. v_length
          LOOP
             v_substr := SUBSTR (p_str, i, 1);
@@ -1469,7 +1469,7 @@ BEGIN
             END CASE;
          END LOOP;
       WHEN 2
-      THEN                                                           --ȫƴ����ĸ��д
+      THEN                                                           --全拼首字母大写
          FOR i IN 1 .. v_length
          LOOP
             v_substr := SUBSTR (p_str, i, 1);
@@ -2915,7 +2915,7 @@ BEGIN
             END CASE;
          END LOOP;
       WHEN 3
-      THEN                                                             --����ĸСд
+      THEN                                                             --首字母小写
          FOR i IN 1 .. v_length
          LOOP
             v_substr := SUBSTR (p_str, i, 1);
@@ -2999,7 +2999,7 @@ BEGIN
             END CASE;
          END LOOP;
       WHEN 4
-      THEN                                                             --����ĸ��д
+      THEN                                                             --首字母大写
          FOR i IN 1 .. v_length
          LOOP
             v_substr := SUBSTR (p_str, i, 1);
@@ -3082,7 +3082,7 @@ BEGIN
                   v_return := v_return || v_substr;
             END CASE;
          END LOOP;
-      ELSE                                                              --ȫƴСд
+      ELSE                                                              --全拼小写
          FOR i IN 1 .. v_length
          LOOP
             v_substr := SUBSTR (p_str, i, 1);
@@ -4534,9 +4534,9 @@ end;
 
 --example
 /*
-select F_GETPY('�л����񹲺͹�') from dual;
-select F_GETPY('�л����񹲺͹�',1) from dual;
-select F_GETPY('�л����񹲺͹�',2) from dual;
-select F_GETPY('�л����񹲺͹�',3) from dual;
-select F_GETPY('�л����񹲺͹�',4) from dual;
+select F_GETPY('中华人民共和国') from dual;
+select F_GETPY('中华人民共和国',1) from dual;
+select F_GETPY('中华人民共和国',2) from dual;
+select F_GETPY('中华人民共和国',3) from dual;
+select F_GETPY('中华人民共和国',4) from dual;
 */

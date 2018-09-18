@@ -1,10 +1,10 @@
 create or replace procedure p_kai_partial_into_tb_demo_bro(a_type in varchar2) is
   /*
     --kai 2018-03-15
-    --´óÊı¾İ±í·ÖÅú²åÈëdemo
+    --å¤§æ•°æ®è¡¨åˆ†æ‰¹æ’å…¥demo
   */
 
-  --v_sql     varchar2(30000); --²éÕÒ½á¹û¼¯Óï¾ä
+  --v_sql     varchar2(30000); --æŸ¥æ‰¾ç»“æœé›†è¯­å¥
   v_date    date;
   v_type    varchar2(10);
   v_rowids  array_varchar2_50;
@@ -15,7 +15,7 @@ begin
   v_type := 'ins';
 
   if a_type=1 then
-    --²åÈëVIP»áÔ±ÈÕÖ¾±í
+    --æ’å…¥VIPä¼šå‘˜æ—¥å¿—è¡¨
     declare
       cursor cur is
         select tc_rowid, tc_code
@@ -39,7 +39,7 @@ begin
       close cur;
     end;
   elsif a_type=2 then
-    --²åÈëVIP¿¨ÈÕÖ¾±í
+    --æ’å…¥VIPå¡æ—¥å¿—è¡¨
     declare
       cursor cur is
        select tc_rowid, tc_code, tc_vip_customer_info_rowid
