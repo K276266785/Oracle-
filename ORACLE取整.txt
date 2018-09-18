@@ -1,8 +1,8 @@
---³£ÓÃº¯Êı
-È¡Õû(´ó)  ¡¡¡¡ select ceil(-1.001) value from dual ¡¡¡¡
+ï»¿--å¸¸ç”¨å‡½æ•°
+å–æ•´(å¤§)  ã€€ã€€ select ceil(-1.001) value from dual ã€€ã€€
 
-È¡Õû£¨Ğ¡£© ¡¡¡¡select floor(-1.001) value from dual ¡¡¡¡
+å–æ•´ï¼ˆå°ï¼‰ ã€€ã€€select floor(-1.001) value from dual ã€€ã€€
 
-È¡Õû£¨½ØÈ¡£©¡¡ select trunc(-1.002) value from dual        
+å–æ•´ï¼ˆæˆªå–ï¼‰ã€€ select trunc(-1.002) value from dual        
 
-È¡Õû(ÉáÈë)     select round(-1.001) value from dual
+å–æ•´(èˆå…¥)     select round(-1.001) value from dual
