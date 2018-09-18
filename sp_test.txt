@@ -1,0 +1,11 @@
+create or replace procedure p_sp_test(a_out_cursor out sys_refcursor) is
+  v_sql     varchar2(3000);
+  v_temp_0a varchar2(100);
+begin
+  v_temp_0a := 'tmpp_test_0a';
+
+  v_sql := 'select tc_code,tc_name from tb_store_0a where rownum<10';
+  p_create_tmpp_table_bro(v_sql,v_temp_0a);
+ 
+  open a_out_cursor for 'select * from '||v_temp_0a;
+end;

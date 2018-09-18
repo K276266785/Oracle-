@@ -1,0 +1,13 @@
+--查询含有单引号的字段
+select * from tb_dict_province_0a
+where regexp_like(tc_name,'['''']+');
+
+--替换
+select tc_name,
+       replace(tc_name,chr(39),' ') as tc_name2
+       from tb_dict_province_0a
+where tc_rowid = 97
+
+update tb_dict_province_0a
+set tc_name = replace(tc_name,chr(39),'’') 
+where tc_rowid = 97

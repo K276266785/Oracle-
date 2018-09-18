@@ -1,0 +1,7 @@
+取整(大)  　　 select ceil(-1.001) value from dual 　　
+
+取整（小） 　　select floor(-1.001) value from dual 　　
+
+取整（截取）　 select trunc(-1.002) value from dual        
+
+取整(舍入)     select round(-1.001) value from dual

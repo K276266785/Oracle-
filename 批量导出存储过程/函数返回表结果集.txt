@@ -1,0 +1,24 @@
+create or replace type Type_Row_Test as object  
+ (  
+  tc_rowid varchar2(50),  
+  tc_code varchar2(50),  
+  tc_name varchar2(50)  
+  );  
+  
+create or replace type Type_Table_Test  as table of Type_Row_Test;    
+
+create or replace FUNCTION F_Test(pIdIn varchar2) return Type_Table_Test
+  pipelined --¹ÜµÀ  
+ as
+  v Type_Row_Test;
+begin
+  for thisrow in (SELECT tc_rowid, tc_code, tc_name
+                    FROM tb_store_0a
+                  where rownum<=pIdIn) loop
+    v := Type_Row_Test(thisrow.tc_rowid, thisrow.tc_code, thisrow.tc_name);
+    pipe row(v);
+  end loop;
+  return;
+end;
+
+select * from table(F_Test(20));  

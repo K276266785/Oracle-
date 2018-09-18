@@ -1,0 +1,22 @@
+create or replace type t_str_split is table of varchar2 (4000);
+
+create or replace function row_split(var_str in string, var_split In String)  
+  return t_str_split  
+  PIPELINED as  
+  var_tmp     varchar2(4000);  
+  var_element varchar2(4000);  
+  n_length    Number := length(var_split);  
+begin  
+  var_tmp := var_str;  
+  while instr(var_tmp, var_split) > 0 loop  
+    var_element := substr(var_tmp, 1, instr(var_tmp, var_split) - 1);  
+    var_tmp     := substr(var_tmp,  
+                          instr(var_tmp, var_split) + n_length,  
+                          length(var_tmp));  
+    pipe row(var_element);  
+  end loop;  
+  pipe row(var_tmp);  
+  return;  
+end row_split;
+
+select column_value from table(row_split('aa,bb,cc,123', ','));

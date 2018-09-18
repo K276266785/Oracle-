@@ -1,0 +1,10 @@
+grant all privileges to ray4;
+
+grant insert,delete,update,select on ray7.tmp_upload_plu_0a to ray4;
+grant select on ray7.tb_dict_plu_0a to ray4;
+grant select on ray4.tb_dict_plu_0a to ray7;
+
+grant insert,delete,update,select on ray7.tb_dict_range_0a to ray2;   
+grant insert,delete,update,select on ray7.tb_dict_category_0a to ray2;   
+grant insert,delete,update,select on ray7.tb_dict_pattern_0a to ray2;   
+grant insert,delete,update,select on ray7.tb_dict_sort_0a to ray2; 

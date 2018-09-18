@@ -1,0 +1,15 @@
+--临时表列表结果
+  v_sql :='with temp as 
+          (select '''||V_TEMP_RESULT_TABLE_0A||'''||'',''||
+                  '''||V_TEMP_RESULT_TABLE_0B||'''||'',''||
+                  '''||V_TEMP_RESULT_TABLE_0C||'''||'',''||
+                  '''||V_TEMP_RESULT_TABLE_0D||''' as tc_table_name from dual)      
+          select substr(tc_table_name,instr(tc_table_name,'','',1,rn)+1,instr(tc_table_name,'','',1,rn+1)-instr(tc_table_name,'','',1,rn)-1) tc_table_name from
+          (
+            select '',''||t1.tc_table_name||'','' tc_table_name,t2.rn from temp t1,
+            (select rownum rn from all_objects where rownum <= (select length(tc_table_name)-length(replace(tc_table_name,'','',''''))+1 from temp)) t2
+          )';
+          
+  P_CREATE_TMP_TABLE_BRO(V_SQL, V_TEMP_OUT_TABLE);    
+  
+  a_table_name :=V_TEMP_OUT_TABLE;

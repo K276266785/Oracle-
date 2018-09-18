@@ -1,0 +1,62 @@
+--查看锁表进程SQL语句1： 
+select sess.sid, 
+    sess.serial#, 
+    lo.oracle_username, 
+    lo.os_user_name, 
+    ao.object_name, 
+    lo.locked_mode 
+    from v$locked_object lo, 
+    dba_objects ao, 
+    v$session sess 
+where ao.object_id = lo.object_id and lo.session_id = sess.sid; 
+
+--查看锁表进程SQL语句2： 
+select * from v$session t1, v$locked_object t2 where t1.sid = t2.SESSION_ID; 
+
+--杀掉锁表进程： 
+--如有記錄則表示有lock，記錄下SID和serial# ，將記錄的ID替換下面的738,1429，即可解除LOCK 
+alter system kill session '1854,38775'; 
+
+
+select distinct('alter system kill session '''||sess.sid||','|| 
+    sess.serial#||''';') as tc1
+    from v$locked_object lo, 
+    dba_objects ao, 
+    v$session sess 
+where ao.object_id = lo.object_id and lo.session_id = sess.sid
+and object_name like '%BIRT%'; 
+
+--无法kill,后续处理,找出进程spid
+select spid, osuser, s.program
+  from v$session s, v$process p
+ where s.paddr = p.addr      
+   and s.sid = 1854;
+--3296
+
+--登录服务器：10.12.3.80
+--进入目录:D:\app\oracle\product\11.2.0\dbhome_1\BIN 
+orakill orcl 3296
+
+--读写最频繁的sql
+select *
+from (select v.sql_id,
+v.child_number,
+v.sql_text,
+v.elapsed_time,
+v.cpu_time,
+v.disk_reads,
+rank() over(order by v.disk_reads desc) elapsed_rank
+from v$sql v) a
+where elapsed_rank <= 10;
+
+select /* 最耗资源SQL */ round(t3.value/100,0)cpu_used_seconds,s.sid,t3.value perf_value,s.username,s.event,s.program,case when s.wait_time>0 then round(s.wait_time/100,0)else s.wait_time end wait_time_seconds,q.sql_text,q.sql_fulltext
+,'ALTER SYSTEM KILL SESSION '''||s.sid||','||s.serial#||''';'kill_session_cmd
+from v$session s,v$process p,v$sqlarea q,
+(select t2.* from(select ss.sid,ss.value from v$sesstat ss,v$session se
+where ss.statistic# in(select statistic# from v$statname where name='CPU used by this session' /* 修改此处调整查询的性能类型：CPU耗时'CPU used by this session'、物理总读'physical read total bytes'、物理总写'physical write bytes' */ )
+and se.sid=ss.sid and se.user#>0 and se.username not in('DBSNMP','SYSMAN')and se.program is null and exists(select 1 from v$sqlarea t1 where t1.address=se.sql_address)
+order by ss.value desc)t2
+where rownum <=10 /* 修改此处调整返回的session数量 */
+)t3
+where s.paddr=p.addr and s.sql_address=q.address and s.sid=t3.sid
+order by cpu_used_seconds desc,s.sid;

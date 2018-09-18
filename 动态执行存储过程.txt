@@ -1,0 +1,202 @@
+如何动态执行存储过程或函数(转)目前在Oracle数据库存储过程研发过程中，遇到需要从某张表中读取存储过程名并进行动态执行的情况，经查找资料，制作成DEMO，并通过测试，现共享下，以备其他同事遇到此种情况时参考。
+
+ 
+
+/*动态执行存储过程DEMO*/
+
+DECLARE
+
+ v_Procedure_Name   VARCHAR2(320); --存储过程名
+
+ v_Input_Parameter1 VARCHAR2(320); --传入参数1
+
+ v_Input_Parameter2 VARCHAR2(320); --传入参数2
+
+ v_Return_Int       INTEGER; --接收返回值
+
+ v_Return_String    VARCHAR2(320); --接收返回值 
+
+ v_Sql_Str          VARCHAR2(320); --动态执行SQL语句
+
+BEGIN
+
+ /*获取存储过程名，可以从数据库中动态读取需要执行的存储过程，本DEMO直接赋值*/
+
+ v_Procedure_Name := 'Wms_Application_Out_p.Application_Out_List_Refuse(:i_Str1,:i_Str2,:o_Return_Int,:o_Return_String)';
+
+ /*本DEMO假定需要调用的存储过程有两个传入参数和两个传出参数*/
+
+ v_Input_Parameter1 := 'test01'; --传入参数1,在实际应用中根据具体情况机型赋值
+
+ v_Input_Parameter2 := 'test01'; --传入参数2,在实际应用中根据具体情况机型赋值
+
+ /*动态生成需要执行存储过程的SQL语句*/
+
+ v_Sql_Str := 'BEGIN ' || v_Procedure_Name || '; END;';
+
+ /*执行该SQL语句*/
+
+ EXECUTE IMMEDIATE v_Sql_Str
+
+    USING IN v_Input_Parameter1, IN v_Input_Parameter2, OUT v_Return_Int, OUT v_Return_String; --参数类型和传递顺序必须与存储过程中的保持一致
+
+ /*输出返回值*/
+
+ Dbms_Output.Put_Line(v_Return_Int || v_Return_String);
+
+END;
+
+ 
+
+/*动态执行函数DEMO*/
+
+DECLARE
+
+ v_Function_Name    VARCHAR2(320); --函数名
+
+ v_Input_Parameter1 VARCHAR2(320); --传入参数1
+
+ v_Return_String    VARCHAR2(320); --接收返回值 
+
+ v_Sql_Str          VARCHAR2(320); --动态执行SQL语句
+
+BEGIN
+
+ /*获取函数名，可以从数据库中动态读取需要执行的函数，本DEMO直接赋值*/
+
+ v_Function_Name := 'Return_Str_f(:i_Str1)';
+
+ /*本DEMO假定需要调用的函数有1个传入参数*/
+
+ v_Input_Parameter1 := 'test01'; --传入参数1,在实际应用中根据具体情况机型赋值
+
+ /*动态生成需要执行函数的SQL语句*/
+
+ v_Sql_Str := 'begin :v_Return_String := ' || v_Function_Name || '; end;';
+
+ /*执行该SQL语句*/
+
+ EXECUTE IMMEDIATE v_Sql_Str
+
+    USING OUT v_Return_String, IN v_Input_Parameter1; --接收返回值必须在前，传入参数类型和传递顺序必须与函数中保持一致
+
+ /*输出返回值*/
+
+ Dbms_Output.Put_Line(v_Return_String);
+
+END;
+
+ 
+
+/*所调用函数*/
+
+CREATE OR REPLACE FUNCTION Return_Str_f(i_Str1 VARCHAR2) RETURN VARCHAR2 IS
+
+ v_Sql_Str VARCHAR2(320);
+
+ v_Str1    VARCHAR2(320);
+
+BEGIN
+
+ /*生成动态执行SQL*/
+
+ v_Sql_Str := 'SELECT ''' || i_Str1 || ''' FROM DUAL';
+
+ EXECUTE IMMEDIATE v_Sql_Str
+
+    INTO v_Str1; --接收返回值
+
+ /*输出返回结果*/
+
+ Dbms_Output.Put_Line('v_str1=' || v_Str1);
+
+ RETURN v_Str1;
+
+END;
+
+ 
+
+ 
+
+相关资料：
+
+Oracle PL/SQL中动态执行SQL EXECUTE IMMEDIATE
+
+ 在plsql中经常遇到sql语句是在过程中动态生成的，这个时候可以用EXECUTE IMMEDIATE来执行生成的sql语句。转一个javaeye（貌似他也是转的，找不到出处）上的EXECUTE IMMEDIATE用法。
+
+    EXECUTE IMMEDIATE代替了以前Oracle8i中DBMS_SQL package包.它解析并马上执行动态的SQL语句或非运行时创建的PL/SQL块.动态创建和执行SQL语句性能超前，EXECUTE IMMEDIATE的目标在于减小企业费用并获得较高的性能，较之以前它相当轻易编码.尽管DBMS_SQL仍然可用，
+    但是推荐使用EXECUTE IMMEDIATE,因为它获的收益在包之上。
+　　使用技巧
+　　1. EXECUTE IMMEDIATE将不会提交一个DML事务执行，应该显式提交
+　　假如通过EXECUTE IMMEDIATE处理DML命令，那么在完成以前需要显式提交或者作为EXECUTE IMMEDIATE自己的一部分. 假如通过EXECUTE IMMEDIATE处理DDL命令,它提交所有以前改变的数据
+　　2. 不支持返回多行的查询,这种交互将用临时表来存储记录(参照例子如下)或者用REF cursors.
+　　3. 当执行SQL语句时，不要用分号，当执行PL/SQL块时，在其尾部用分号.
+　　4. 在Oracle手册中，未具体覆盖这些功能。下面的例子展示了所有用到Execute immediate的可能方面.希望能给你带来方便.
+　　5. 对于Forms开发者,当在PL/SQL 8.0.6.3.版本中，Forms 6i不能使用此功能.
+　　EXECUTE IMMEDIATE用法例子
+　　1. 在PL/SQL运行DDL语句
+　　begin
+　　execute immediate 'set role all';
+　　end;
+　　2. 给动态语句传值(USING 子句)
+　　declare
+　　l_depnam varchar2(20) := 'testing';
+　　l_locvarchar2(10) := 'Dubai';
+　　begin
+　　execute immediate 'insert into dept values(:1, :2, :3)'
+　　using 50, l_depnam, l_loc;
+　　commit;
+　　end;
+　　3. 从动态语句检索值(INTO子句)
+　　declare
+　　l_cntvarchar2(20);
+　　begin
+　　execute immediate 'select count(1) from emp'
+　　into l_cnt;
+　　dbms_output.put_line(l_cnt);
+　　end;
+　　4. 动态调用例程.例程中用到的绑定变量参数必须指定参数类型.黓认为IN类型,其它类型必须显式指定
+　　declare
+　　l_routin varchar2(100) := 'gen2161.get_rowcnt';
+　　l_tblnam varchar2(20) := 'emp';
+　　l_cntnumber;
+　　l_status varchar2(200);
+　　begin
+　　execute immediate 'begin ' l_routin '(:2, :3, :4); end;'
+　　using in l_tblnam, out l_cnt, in out l_status;
+　　if l_status != 'OK' then
+　　dbms_output.put_line('error');
+　　end if;
+　　end;
+　　5. 将返回值传递到PL/SQL记录类型;同样也可用%rowtype变量
+　　declare
+　　type empdtlrec is record (empnonumber(4),
+　　enamevarchar2(20),
+　　deptnonumber(2));
+　　empdtl empdtlrec;
+　　begin
+　　execute immediate 'select empno, ename, deptno ' 
+　　'from emp where empno = 7934'
+　　into empdtl;
+　　end;
+　　6. 传递并检索值.INTO子句用在USING子句前
+　　declare
+　　l_deptpls_integer := 20;
+　　l_nam varchar2(20);
+　　l_loc varchar2(20);
+　　begin
+　　execute immediate 'select dname, loc from dept where deptno = :1'
+　　into l_nam, l_loc
+　　using l_dept ;
+　　end;
+　　7. 多行查询选项.对此选项用insert语句填充临时表，用临时表进行进一步的处理,也可以用REF cursors纠正此缺憾.
+　　declare
+　　l_sal pls_integer := 2000;
+　　begin
+　　execute immediate 'insert into temp(empno, ename) ' 
+　　'select empno, ename from emp ' 
+　　'wheresal :1'
+　　using l_sal;
+　　commit;
+　　end;
+　　对于处理动态语句,EXECUTE IMMEDIATE比以前可能用到的更轻易并且更高效.当意图执行动态语句时，适当地处理异常更加重要.应该关注于捕捉所有可能的异常.

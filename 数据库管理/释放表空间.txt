@@ -1,0 +1,37 @@
+--检查数据库表空间占用空间情况:
+ select tablespace_name, sum(bytes) / 1024 / 1024 / 1024 GB
+   from dba_data_files
+  group by tablespace_name
+ union all
+ select tablespace_name, sum(bytes) / 1024 / 1024 / 1024 GB
+   from dba_temp_files
+  group by tablespace_name
+  order by GB;
+  
+  --1.确认文件位置
+  select file_name,bytes/1024/1024 from dba_data_files where tablespace_name like 'UNDOTBS1';
+  
+  --2.检查UNDO Segment状态
+  select usn,xacts,rssize/1024/1024/1024,hwmsize/1024/1024/1024,shrinks from v$rollstat order by rssize;
+  
+  --3.创建新的UNDO表空间
+  create undo tablespace undotbs2 ;
+  
+  --4.切换UNDO表空间为新的UNDO表空间
+  --创建了新的UNDO表空间以后，如果不知道系统使用的是pfile还是spfile文件，应使用参数both,会同时修改spfile文件，避免出现冲突。
+  alter system set undo_tablespace=undotbs2 scope=both;
+  
+  --5.等待原UNDO表空间所有UNDO SEGMENT OFFLINE 
+  select usn,xacts,status,rssize/1024/1024/1024,hwmsize/1024/1024/1024,shrinks from v$rollstat order by rssize;
+  
+  --6.删除原UNDO表空间
+  --（本人经测试觉得其实是否可以用drop tablespace undotbs1 including contents and datafiles;直接连硬盘里面的dbf文件件一起删除）
+  drop tablespace undotbs1 including contents;
+  
+  --7.检查空间情况
+  --由于我使用的ASM管理,可以使用10gR2提供的信工具asmcmd来察看空间占用情况.
+  /*[oracle@danaly ~]$ export ORACLE_SID=+ASM
+  [oracle@danaly ~]$ asmcmd
+  ASMCMD> du 
+  Used_MB      Mirror_used_MB
+    21625               21625*/

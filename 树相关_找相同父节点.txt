@@ -1,0 +1,33 @@
+select t3.tc_rowid from(
+
+select /* 所有共同父记录 - 向下获取层级(level) */
+tc_rowid,level,row_number()over(order by level desc)tc_rownum
+--,sys_connect_by_path(tc_code,'\')tc_full_code,sys_connect_by_path(tc_name,'\')tc_full_name
+from(
+select case when t.tc_parent_rowid=t.tc_rowid then 0 else t.tc_parent_rowid end tc_new_parent_rowid,t.* from tb_customer_0a t
+)t1
+where t1.tc_rowid in(
+
+select /* 所有共同父记录 */ t2.tc_rowid from(
+
+select /* 所有各自父记录 */ t1.tc_rowid,count(*)tc_count
+--,count(*)over(partition by t1.tc_rowid)tc_count,sys_connect_by_path(tc_code,'\')tc_full_code,sys_connect_by_path(tc_name,'\')tc_full_name
+from(
+select case when t.tc_parent_rowid=t.tc_rowid then 0 else t.tc_parent_rowid end tc_new_parent_rowid,t.* from tb_customer_0a t
+)t1
+start with
+--t1.tc_rowid in(769, 770, 546, 86) -- 子记录
+t1.tc_rowid in(769, 770) -- 子记录
+connect by prior t1.tc_new_parent_rowid=t1.tc_rowid -- loop up
+group by t1.tc_rowid
+
+)t2 where 1=1
+--and t2.tc_count=4 -- 判断共同父记录
+and t2.tc_count=2 -- 判断共同父记录
+
+)
+start with t1.tc_new_parent_rowid = 0
+connect by prior t1.tc_rowid = t1.tc_new_parent_rowid -- loop down
+
+)t3 where t3.tc_rownum=1
+;

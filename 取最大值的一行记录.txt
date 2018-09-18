@@ -1,0 +1,40 @@
+
+DROP TABLE kai_test4;
+
+CREATE TABLE kai_test4(tc_num NUMBER,
+       tc_code VARCHAR2(100));
+       
+INSERT INTO kai_test4(tc_num,tc_code) VALUES(999,'aaa1');     
+INSERT INTO kai_test4(tc_num,tc_code) VALUES(998,'aaa2');     
+INSERT INTO kai_test4(tc_num,tc_code) VALUES(997,'aaa3');     
+INSERT INTO kai_test4(tc_num,tc_code) VALUES(996,'aaa4');     
+INSERT INTO kai_test4(tc_num,tc_code) VALUES(995,'aaa4');   
+INSERT INTO kai_test4(tc_num,tc_code) VALUES(1001,'aaa6');       
+       
+SELECT t1.* FROM kai_test4 T1  
+WHERE T1.tc_num >= ALL(SELECT t2.tc_num FROM kai_test4 T2);
+
+--分组取最大值
+DROP TABLE kai_test4;
+
+CREATE TABLE kai_test4(tc_num NUMBER,
+       tc_code VARCHAR2(100),
+       tc_group varchar2(100));
+       
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(999,'aaa1','a');     
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(998,'aaa2','a');     
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(997,'aaa3','b');     
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(996,'aaa4','b');     
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(995,'aaa5','b');   
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(1001,'aaa6','c');       
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(1008,'aaa7','c');    
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(1013,'aaa8','c');    
+INSERT INTO kai_test4(tc_num,tc_code,tc_group) VALUES(1012,'aaa9','c');   
+
+--方式1
+select * from kai_test4 t where not exists(select 1 from kai_test4 where tc_group=t.tc_group and tc_num>t.tc_num) 
+
+--方式2(效率最快)
+select * from 
+(select t.*,row_number() over(PARTITION by tc_group order by tc_num desc) as num from kai_test4 t) tt where tt.num = 1 
+order by tc_group;       

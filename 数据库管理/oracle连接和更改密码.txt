@@ -1,0 +1,13 @@
+1.不用密码登录
+sqlplus /nolog
+2.连接
+connect sys/oracle as sysdba
+connect system/oracle
+3.解锁用户
+alter user system account unlock;
+4.修改用户system密码为:manager
+alter user system identified by manager;
+5.连接已更改为：
+connect system/manager
+6.查看用户名和密码：
+select username,password from dba_users;

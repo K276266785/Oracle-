@@ -1,0 +1,27 @@
+create or replace procedure P_CREATE_TMPP_TABLE_BRO(a_select_sql varchar2,
+                                                    a_table      varchar) is
+  v_sql      varchar2(30000);
+  v_theCount number;
+  /*
+  --模块功能：根据结果集生成临时数据表，等同SQL Server的[select into表]功能
+  */
+begin
+  if (upper(substr(a_table, 0, 5)) <> 'TMPP_') then
+    raise_application_error(-20001, '违反命名规则:系统只接受以tmpp_开头命名的临时表');
+  end if;
+  
+  select count(1)
+    into v_theCount
+    from user_tables
+   where table_name = upper(a_table);
+   
+  if (v_theCount > 0) then
+    v_sql := 'insert into ' || a_table || ' ' || a_select_sql;
+    execute immediate v_sql;
+  else
+    v_sql := 'CREATE GLOBAL TEMPORARY TABLE ' || a_table || ' ON COMMIT PRESERVE ROWS AS ' || a_select_sql;
+    execute immediate v_sql;
+  end if;
+end;
+
+

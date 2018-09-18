@@ -1,0 +1,43 @@
+create or replace package pkg_test as
+  type myrctype is ref cursor;
+  function f_get_Store(a_store_rowid number) return myrctype;
+  procedure p_get_Store(a_store_rowid number, p_rc out myrctype); --Package中声明名为get 的Procedure(只有接口没内容) 
+end pkg_test;
+
+create or replace package body pkg_test as
+  --FNC
+  function f_get_Store(a_store_rowid number) return myrctype is
+    rc     myrctype; --定义ref cursor变量
+    sqlstr varchar2(500);
+  begin
+    if a_store_rowid = 0 then
+      --静态测试，直接用select语句直接返回结果
+      open rc for
+        select tc_rowid, tc_code, tc_name from tb_store_0a;
+    else
+      --动态sql赋值，用:w_id来申明该变量从外部获得
+      sqlstr := 'select tc_rowid,tc_code,tc_name from tb_store_0a where tc_rowid=:w_id';
+      --动态测试，用sqlstr字符串返回结果，用using关键词传递参数
+      open rc for sqlstr
+        using a_store_rowid;
+    end if;
+    return rc;
+  end f_get_Store;
+  
+  --PROC
+  procedure p_get_store(a_store_rowid number,p_rc out myrctype) is 
+    sqlstr varchar2 (500); 
+  begin 
+    if a_store_rowid = 0 then 
+      open p_rc for select tc_rowid, tc_code, tc_name from tb_store_0a;
+    else 
+      sqlstr := 'select tc_rowid,tc_code,tc_name from tb_store_0a where tc_rowid=:v1';
+      open p_rc for sqlstr USING a_store_rowid; 
+    end if; 
+  end p_get_store; 
+end pkg_test;
+
+--test
+select pkg_test.f_get_store(0) from dual;
+
+call pkg_test.p_get_store(0);

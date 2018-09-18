@@ -1,0 +1,66 @@
+﻿对于oracle10g简单方法:
+1. 先建立一个物化视图,不用指明刷新参数,只要create materialized view,如
+  CREATE MATERIALIZED VIEW mv_emp  
+  AS SELECT * FROM scott.emp;
+
+2. 建立一个用来刷新物化视图的存储过程，如
+
+CREATE OR REPLACE PROCEDURE auto_refresh_mview_job_proc
+AS
+BEGIN
+  dbms_mview.REFRESH('mv_emp');
+END;
+/
+
+
+3. 用ORACLE 10g的scheduler每天12:00和19:00定期刷新物化视图
+
+  BEGIN
+DBMS_SCHEDULER.CREATE_JOB(
+job_name => 'auot_refresh_mview_job',
+job_type => 'STORED_PROCEDURE',
+job_action => 'scott.auto_refresh_mview_job_proc',
+start_date => SYSDATE,
+repeat_interval => 'FREQ=DAILY; BYHOUR=12,19',
+enabled => TRUE,
+comments => 'Refresh materialized view mv_emp'
+);
+END;
+/
+
+4. 删除scheduler对象的方法
+
+BEGIN
+DBMS_SCHEDULER.DROP_JOB(
+job_name => 'auot_refresh_mview_job'
+);
+END;
+/
+
+
+-- job 查询
+ select owner, job_name, state from dba_scheduler_jobs;
+ select job_name, state from user_scheduler_jobs;
+ select job_name, 
+        job_action,
+        repeat_interval,
+        comments,
+        state,
+        last_run_duration,
+        max_run_duration,
+        run_count,
+        failure_count 
+        from user_scheduler_jobs
+ --where state = 'SCHEDULED'       
+ order by job_name;
+
+ -- job 启用
+ begin
+ dbms_scheduler.enable('refresh_pos_sale_for_month_job');
+ end;
+
+
+-- job 运行
+ begin
+ dbms_scheduler.run_job('refresh_pos_sale_for_month_job',TRUE); -- true代表同步执行
+ end;

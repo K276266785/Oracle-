@@ -1,0 +1,27 @@
+select cid,cname,cpid  from yourtable  connect by prior cid=cpid start with cid=1
+
+
+create table DEP
+(DEPID      number(10) not null,
+ DEPNAME    varchar2(100),
+ UPPERDEPID number(10))
+ 
+ INSERT INTO DEP(DEPID, DEPNAME, UPPERDEPID) VALUES (0, '总经办', null);
+ INSERT INTO DEP(DEPID, DEPNAME, UPPERDEPID) VALUES (1, '开发部', 0);
+ INSERT INTO DEP(DEPID, DEPNAME, UPPERDEPID) VALUES (2, '测试部', 0);
+ INSERT INTO DEP(DEPID, DEPNAME, UPPERDEPID) VALUES (3, 'Sever开发部', 1);
+ INSERT INTO DEP(DEPID, DEPNAME, UPPERDEPID) VALUES (4, 'Client开发部', 1);
+ INSERT INTO DEP(DEPID, DEPNAME, UPPERDEPID) VALUES (5, 'TA测试部', 2);
+ INSERT INTO DEP(DEPID, DEPNAME, UPPERDEPID) VALUES (6, '项目测试部', 2);
+ commit;
+ 
+ SELECT * FROM DEP;
+ 
+ SELECT RPAD( ' ', 2*(LEVEL-1), '-' ) || DEPNAME "DEPNAME",
+        CONNECT_BY_ROOT DEPNAME "ROOT",
+        CONNECT_BY_ISLEAF "ISLEAF",
+        LEVEL ,
+        SYS_CONNECT_BY_PATH(DEPNAME, '/') "PATH"
+        FROM DEP
+        START WITH UPPERDEPID IS null
+        CONNECT BY PRIOR DEPID = UPPERDEPID;

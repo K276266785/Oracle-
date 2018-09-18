@@ -1,0 +1,23 @@
+http://hi.baidu.com/fishman0923/blog/item/a54d0626ecc40c489922ed59.html
+
+drop table kai_test4;
+
+create table kai_test4(tc_code varchar2(100),
+       tc_user_name varchar2(100),
+       tc_address varchar2(100),
+       tc_is_alone varchar2(2));
+       
+insert into kai_test4 values(1,'a','abc',0);
+insert into kai_test4 values(2,'a','abc',0);
+insert into kai_test4 values(3,'a','abc',1);
+insert into kai_test4 values(4,'b','jkl',0);
+insert into kai_test4 values(5,'b','adfc',0);
+insert into kai_test4 values(6,'b','jkl',0);
+insert into kai_test4 values(7,'c','abc',0);
+insert into kai_test4 values(8,'a','abc',1);
+
+select * from kai_test4
+
+select t.*,
+       dense_rank() over(partition by 1 order by tc_user_name,tc_address,tc_is_alone)
+       from kai_test4 t

@@ -1,0 +1,5 @@
+--synonyms update SEQ
+select t.sequence_owner, t.sequence_name, 'create or replace synonym ' || t.sequence_name || ' for EPOMANAGE.' || t.sequence_name || ';'
+from dba_sequences t where t.sequence_owner = 'EPOMANAGE'
+     and not exists (select * from dba_synonyms tt where  t.sequence_name = tt.synonym_name and t.sequence_name like 'SEQ_%');
+  

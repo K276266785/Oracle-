@@ -1,0 +1,10 @@
+(Ext.get\('paramsMap_storeRowidArray.*?\).dom.value='all)';(Ext.get\('paramsMap_storeRowidArray[^\)]+'\).dom.value='all)';
+
+
+正则表达式列转行
+SELECT regexp_substr('1101,Yokohama,Japan,1.5.105', '[^,]+', 1, LEVEL) AS output FROM dual 
+CONNECT BY LEVEL <= length('1101,Yokohama,Japan,1.5.105') - length(REPLACE('1101,Yokohama,Japan,1.5.105', ',')) + 1; 
+
+--查找Cx-的帐号
+select * from tb_user_info_0a
+where regexp_like(tc_code,'C[[:digit:]]-+');

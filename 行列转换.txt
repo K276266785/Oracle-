@@ -1,0 +1,37 @@
+https://blog.csdn.net/newegg2009/article/details/7574707
+
+1.创建表：
+create table test(id int,name varchar(20),quarter int,profile int))
+
+insert into test values(1,'a',1,1000);
+insert into test values(1,'a',2,1000);
+insert into test values(1,'a',3,1000);
+insert into test values(1,'a',4,1000);
+insert into test values(2,'a',1,1000);
+insert into test values(2,'a',2,1000);
+insert into test values(2,'a',3,1000);
+insert into test values(2,'a',4,1000);
+
+
+2. Pivot 用法
+select id,name,[1] as '1th Season',[2] as '2th Season',[3] as '3th Season',[4] as '4th Season'
+from test
+pivot
+(
+sum(profile)
+for quarter in ([1],[2],[3],[4])
+)as pvt
+
+select * from test
+
+
+3.Unpivot
+select * from test2
+select id,name,quarters,profiles
+from test2
+unpivot
+(
+profiles
+for quarters in ([Q1],[Q2],[Q3],[Q4])
+)
+as unpvt

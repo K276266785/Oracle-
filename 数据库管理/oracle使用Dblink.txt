@@ -1,0 +1,16 @@
+select * from user_sys_privs where privilege like upper('%DATABASE LINK%');
+
+select * from dba_db_links;
+
+create database link ray2_link
+connect to ray2 identified by "ray2"
+using '(DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.9.97)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = orcl)
+    )
+)';
+
+select * from tb_store_0a@ray2_link;

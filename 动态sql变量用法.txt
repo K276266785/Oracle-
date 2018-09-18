@@ -1,0 +1,109 @@
+1.一般变量的写法:
+if (str_kind is not null) then
+    l_str_kind := str_kind;
+    v_wheresql := v_wheresql || ' and kind = :kind ';
+else 
+    l_str_kind := '1';
+    v_wheresql := v_wheresql || ' and 1 = :kind ';
+end if; 
+
+2.时间段的写法:
+if (dt_itstarttime is not null) then
+    v_wheresql := v_wheresql || ' and createtime >= (' || to_date(dt_itstarttime, 'yyyy-mm-dd hh24:mi:ss') || ' )';
+end;
+
+if (dt_itstarttime is not null) then
+    v_wheresql := v_wheresql || ' and createtime <= (' || to_date(dt_itstarttime, 'yyyy-mm-dd hh24:mi:ss') || ' )';
+end;
+
+if (dt_valstarttime is not null) then
+    v_wheresql := v_wheresql || ' and validtime >= (' || to_date(dt_valstarttime, 'yyyy-mm-dd hh24:mi:ss') || ' )';
+end;
+
+if (dt_valendtime is not null) then
+    v_wheresql := v_wheresql || ' and validtime <= (' || to_date(dt_valendtime, 'yyyy-mm-dd hh24:mi:ss') || ' )';
+end;
+
+或:
+  v_sql := v_sql || ' and trunc(a.creattime) >= to_date(:crestarttime,''yyyy-mm-dd'') ';
+  v_sql := v_sql || ' and trunc(a.creattime) <= to_date(:creendtime,''yyyy-mm-dd'') ';
+  v_sql := v_sql || ' and trunc(a.updatetime) >= to_date(:updstarttime,''yyyy-mm-dd'') ';
+  v_sql := v_sql || ' and trunc(a.updatetime) <= to_date(:updendtime,''yyyy-mm-dd'') ';
+  
+
+3.时间的写法:
+v_sql := v_sql || ' and logtime >= to_date(:logtime, '|| ' ''yyyy-mm-dd hh24:mi:ss'')';
+  
+4.or的写法:
+if (str_object is not null) then
+    l_str_object := str_object;
+    v_sql := v_sql || ' and ( objectid = :objectid or objectname = :objectname )';
+else
+    l_str_object := 1;
+    v_sql := v_sql || ' and ( 1 = :objectid  or 1 = :objectname ) ';
+end if;
+
+注意: 此时在using 中l_str_object要写两个
+
+5.字符串的写法:('|| 字符串 ||')
+举例: 
+--1.trim和rtrim
+v_sql := v_sql || ' and status in (' || ltrim(rtrim(str_status, ','), ',') || ') ';
+--2.字符串
+v_sql := ' select netname from t_cms_netconf where netid = ' || str_netid || ' order by 1 ';
+--3.in
+v_sql := ' t.status in (' || rtrim(str_status, ',') || ')'
+--4.instr
+v_sql := v_sql || ' and instr(''|'' || b.typelist || ''|'', ''|'' || :typelist || ''|'') > 0';
+
+6.数字的写法: ||数字
+举例: v_sql := v_sql || ' and handletimes < ' || f_ums_config_in_qr('deploy/cms/task/maxsend', 5);
+
+7.数组的写法:
+sql中的写法:returning transactionid into :arr_tranactionid 
+using中的写法:returning bulk collect into v_arr_tranactionid   --v_arr_tranactionid定义的临时变量
+                  
+8.like的用法及%和_的处理
+--1.
+    if (str_specialname is not null) then
+        l_str_specialname := '%' || lower(str_specialname) || '%';
+        v_sql := v_sql || ' and lower(a.specialname) like :specialname ';
+    else
+        l_str_specialname := '1';
+        v_sql := v_sql || ' and 1 = :specialname ';
+    end if;
+
+    if (str_tapecopyright is not null) then
+        l_str_tapecopyright := '%' || lower(str_tapecopyright) || '%';
+        v_sql := v_sql || ' and lower(a.tapecopyright) like :tapecopyright ';
+    else
+        l_str_tapecopyright := '1';
+        v_sql := v_sql || ' and 1 = :tapecopyright ';
+    end if;
+
+--2.
+    if (str_specialname is not null) then
+        l_str_specialname := '%' || replace(replace(lower(str_specialname), '%', '<%'), '_', '<_') || '%';
+         v_sql := v_sql || ' and lower(a.specialname) like :specialname escape ''<'' ';
+    else
+        l_str_specialname := '1';
+        v_sql := v_sql || ' and 1 = :specialname ';
+    end if;
+
+    if (str_tapecopyright is not null) then
+        l_str_tapecopyright := '%' || replace(replace(lower(str_tapecopyright), '%', '<%'), '_', '<_') || '%';
+         v_sql := v_sql || ' and lower(a.tapecopyright) like :tapecopyright escape ''<'' ';
+    else
+        l_str_tapecopyright := '1';
+        v_sql := v_sql || ' and 1 = :tapecopyright ';
+    end if;
+ 
+--经测试,两者写法均可.
+
+9.页面上选择"按时间排序"的数据库处理方法         
+--按修改时间排序. 1-时间顺序，2-时间倒序
+if ( i_sortorder = 2 ) then
+    v_sql := v_sql || ' order by a.createtime desc, a.copyrightid ';
+else
+    v_sql := v_sql || ' order by a.createtime asc, a.copyrightid ';
+end if;

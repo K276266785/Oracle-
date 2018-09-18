@@ -1,0 +1,1 @@
+select count(1) from dba_tab_columns where owner=upper('epomanage') and table_name = upper('tb_store_0a')

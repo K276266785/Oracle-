@@ -1,0 +1,64 @@
+create or replace procedure p_kai_partial_into_tb_demo_bro(a_type in varchar2) is
+  /*
+    --kai 2018-03-15
+    --大数据表分批插入demo
+  */
+
+  --v_sql     varchar2(30000); --查找结果集语句
+  v_date    date;
+  v_type    varchar2(10);
+  v_rowids  array_varchar2_50;
+  v_codes   array_varchar2_50;
+  v_cusifs  array_varchar2_50;
+begin
+  v_date := f_get_date_today;
+  v_type := 'ins';
+
+  if a_type=1 then
+    --插入VIP会员日志表
+    declare
+      cursor cur is
+        select tc_rowid, tc_code
+          from tb_vip_customer_info_0a t1
+         where t1.tc_input_type = 1
+           and t1.tc_status = 1
+           and nvl(t1.tc_store_rowid, 0) > 0
+           and (t1.tc_code like 'MA%' or t1.tc_code like 'MK%' or t1.tc_code like 'MS%' or t1.tc_code like 'JC%')
+           and not exists(select 1 from tmp_fp_vip_customer_info_0a t2 where t1.tc_rowid = t2.tc_rowid);
+      --type rec is table of tb_vip_customer_info_0a%rowtype;
+      
+    begin
+      open cur;
+      while (true) loop
+        fetch cur bulk collect into v_rowids,v_codes limit 1000;
+        forall i in 1 .. v_rowids.count
+          insert into tmp_fp_vip_customer_info_0a(tc_rowid, tc_code, tc_type, tc_ins_date) values (v_rowids(i),v_codes(i),v_type,v_date);
+        commit;
+        exit when cur%notfound;
+      end loop;
+      close cur;
+    end;
+  elsif a_type=2 then
+    --插入VIP卡日志表
+    declare
+      cursor cur is
+       select tc_rowid, tc_code, tc_vip_customer_info_rowid
+         from tb_vip_card_0a t1
+        where t1.tc_input_type = 1
+          and t1.tc_vip_grade_rowid in (25, 5, 26, 7, 23, 8, 4, 11, 24, 29, 22, 12, 27, 3, 28)
+          and not exists (select 1 from tmp_fp_vip_card_0a t2 where t1.tc_rowid = t2.tc_rowid);
+      --type rec is table of tb_vip_customer_info_0a%rowtype;
+      
+    begin
+      open cur;
+      while (true) loop
+        fetch cur bulk collect into v_rowids,v_codes,v_cusifs limit 1000;
+        forall i in 1 .. v_rowids.count
+          insert into tmp_fp_vip_card_0a(tc_rowid, tc_code, tc_vip_customer_info_rowid, tc_type, tc_ins_date) values (v_rowids(i),v_codes(i),v_cusifs(i),v_type,v_date);
+        commit;
+        exit when cur%notfound;
+      end loop;
+      close cur;
+    end;
+  end if;
+end;

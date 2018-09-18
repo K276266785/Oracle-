@@ -1,0 +1,5 @@
+A_OUT_ARRAY OUT ARRAY_VARCHAR2_50
+
+select t.tc_rowid bulk collect into a_arraynum from tb_dict_plu_0a t; 
+V_SQL :='SELECT F_ROWID_TO_STORE_CODE(TC_STORE_ROWID) FROM '||V_TEMP_0C;
+EXECUTE IMMEDIATE V_SQL BULK COLLECT INTO A_OUT_ARRAY;

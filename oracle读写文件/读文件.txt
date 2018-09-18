@@ -1,0 +1,36 @@
+--注意:只能访问服务器本地文件
+
+--1创建一个directory
+create or replace directory plu_pic_filename as 'C:\TEMP';
+
+--2.写txt文件
+declare filehandle utl_file.file_type;--句柄
+begin
+filehandle := utl_file.fopen('plu_pic_filename','test1.txt','w');
+utl_file.put_line(filehandle,'hello oracle!');
+utl_file.put_line(filehandle,'你好，胖子!');
+utl_file.fclose(filehandle);--关闭句柄
+end;
+
+--3.读取txt文件
+/*set serveroutput ON*/
+DECLARE
+  filehandle utl_file.file_type;
+  filebuffer varchar(200);
+   BEGIN
+     filehandle := utl_file.fopen('plu_pic_filename','test1.txt','r');
+    loop
+      begin
+           utl_file.get_line(filehandle,filebuffer);
+           INSERT INTO TEST(a) VALUES(filebuffer);
+           EXCEPTION 
+             WHEN no_data_found THEN 
+             exit ; 
+       End;
+      END LOOP;
+    utl_file.fclose(filehandle);
+COMMIT;
+END;
+
+
+select * from test

@@ -1,0 +1,186 @@
+--Oracle 11g
+--列转行(unpivot)
+select tc_plu_rowid,
+       tc_color_rowid,
+       replace(upper(tc_size),upper('tc_qty_'),'') as tc_size_code,
+       tc_qty
+       from 
+       (select tc_plu_rowid,
+               tc_color_rowid,
+               tc_qty_s1,
+               tc_qty_s2,
+               tc_qty_s3,
+               tc_qty_s4,
+               tc_qty_s5,
+               tc_qty_s6,
+               tc_qty_s7
+               from tb_stk_dn_dt_0a
+               where tc_stk_hd_rowid = 133187) 
+               unpivot (tc_qty for tc_size in (tc_qty_s1,tc_qty_s2,tc_qty_s3,tc_qty_s4,tc_qty_s5,tc_qty_s6,tc_qty_s7))
+
+--行转列
+call p_create_tmp_table_bro('select tc_plu_rowid,
+       tc_color_rowid,
+       tc_size_rowid,
+       tc_qty,
+       tc_amt
+       from tb_pos_sale_dt_0a
+where tc_pos_sale_hd_rowid = 1046013','tmp_kai_test1');
+
+drop table tmp_kai_test1;
+
+--方式1
+select tc_plu_rowid,
+       tc_color_rowid,
+       sum(nvl(tc_qty_s1,0)) as tc_qty_s1,
+       sum(nvl(tc_qty_s2,0)) as tc_qty_s2,
+       sum(nvl(tc_qty_s3,0)) as tc_qty_s3,
+       sum(nvl(tc_qty_s4,0)) as tc_qty_s4,
+       sum(nvl(tc_qty_s5,0)) as tc_qty_s5,
+       sum(nvl(tc_qty_s6,0)) as tc_qty_s6,
+       sum(nvl(tc_qty_s7,0)) as tc_qty_s7,
+       sum(nvl(tc_qty_s1,0)+nvl(tc_qty_s2,0)+nvl(tc_qty_s3,0)+nvl(tc_qty_s4,0)+nvl(tc_qty_s5,0)+nvl(tc_qty_s7,0)+nvl(tc_qty_s7,0)) as tc_qty,
+       sum(nvl(tc_amt,0)) as tc_amt from 
+(select tc_plu_rowid,
+       tc_color_rowid,
+       f_rowid_to_size_code(tc_size_rowid) as tc_size_code,
+       sum(tc_qty) as tc_qty,
+       sum(tc_amt) as tc_amt
+       from tmp_kai_test1
+       group by tc_plu_rowid,
+                tc_color_rowid,
+                tc_size_rowid)
+pivot (sum(tc_qty) for tc_size_code in ('S1' as tc_qty_s1,'S2' as tc_qty_s2,'S3' as tc_qty_s3,'S4' as tc_qty_s4,'S5' as tc_qty_s5,'S6' as tc_qty_s6,'S7' as tc_qty_s7))
+group by tc_plu_rowid,tc_color_rowid
+
+--方式2
+select tc_plu_rowid,
+       tc_color_rowid,
+       sum(case when tc_size_code='S1' then tc_qty else 0 end) as tc_qty_s1,
+       sum(case when tc_size_code='S2' then tc_qty else 0 end) as tc_qty_s2,
+       sum(case when tc_size_code='S3' then tc_qty else 0 end) as tc_qty_s3,
+       sum(case when tc_size_code='S4' then tc_qty else 0 end) as tc_qty_s4,
+       sum(case when tc_size_code='S5' then tc_qty else 0 end) as tc_qty_s5,
+       sum(case when tc_size_code='S6' then tc_qty else 0 end) as tc_qty_s6,
+       sum(case when tc_size_code='S7' then tc_qty else 0 end) as tc_qty_s7,
+       sum(tc_qty) as tc_qty,
+       sum(tc_amt) as tc_amt from
+(select tc_plu_rowid,
+       tc_color_rowid,
+       f_rowid_to_size_code(tc_size_rowid) as tc_size_code,
+       sum(tc_qty) as tc_qty,
+       sum(tc_amt) as tc_amt
+       from tmp_kai_test1
+       group by tc_plu_rowid,
+                tc_color_rowid,
+                tc_size_rowid)
+group by tc_plu_rowid,tc_color_rowid      
+
+
+select rownum as tc_id,
+       regexp_substr(t.tc_name, '[^,]+', 1, tc_lv) as tc_name,  
+       regexp_substr(t.tc_type, '[^,]+', 1, tc_lv) as tc_type 
+from (select '类别,品牌,装别' tc_name,
+             'category,brand,sort' tc_type from dual) t,
+ (select level tc_lv from dual connect by level <= 1000)  
+ where tc_lv(+) <= length(t.tc_name) - length(replace(t.tc_name, ',')) + 1 ;
+
+
+Oracle逗号分隔的字符串进行行转列2011-07-11 19:45
+9i下
+--多行
+with temp as
+(select '6001600301,6001600302,6001600303,6001600304' text from dual
+union
+select '7001600301,7001600302,7001600303' text from dual
+)
+select substr(text,instr(text,',',1,rn)+1,instr(text,',',1,rn+1)-instr(text,',',1,rn)-1) text from
+(
+  select ','||t1.text||',' text,t2.rn from
+   (select text,length(text)-length(replace(text,',',''))+1 rn from temp) t1,
+   (select rownum rn from all_objects where rownum <= (select max(length(text)-length(replace(text,',',''))+1) rn from temp)) t2
+  where t1.rn >= t2.rn order by text,rn
+)
+
+TEXT
+6001600301
+6001600302
+6001600303
+6001600304
+7001600301
+7001600302
+7001600303
+
+
+--单行
+with temp as
+(select '6001600301,6001600302,6001600303,6001600304' text from dual)
+select substr(text,instr(text,',',1,rn)+1,instr(text,',',1,rn+1)-instr(text,',',1,rn)-1) text from
+(
+  select ','||t1.text||',' text,t2.rn from temp t1,
+  (select rownum rn from all_objects where rownum <= (select length(text)-length(replace(text,',',''))+1 from temp)) t2
+)
+
+TEXT
+6001600301
+6001600302
+6001600303
+6001600304
+
+
+10G下
+--多行
+with temp as
+(select '6001600301,6001600302,6001600303,6001600304' text from dual
+union
+select '7001600301,7001600302,7001600303' text from dual
+)
+select regexp_substr(text,'[0-9]+',1,rn) text from
+(
+  select t1.text,t2.rn from
+   (select text,length(text)-length(replace(text,',',''))+1 rn from temp) t1,
+   (select level rn from dual connect by rownum <= (select max(length(text)-length(replace(text,',',''))+1) rn from temp)) t2
+  where t1.rn >= t2.rn order by text,rn
+)
+
+TEXT
+6001600301
+6001600302
+6001600303
+6001600304
+7001600301
+7001600302
+7001600303
+
+
+--单行
+with temp as
+(select '6001600301,6001600302,6001600303,6001600304' text from dual)
+select regexp_substr(text,'[0-9]+',1,rn) text from temp t1,
+(select level rn from dual connect by rownum <= (select length(text)-length(replace(text,',',''))+1 from temp)) t2
+
+TEXT
+6001600301
+6001600302
+6001600303
+6001600304 
+
+--获取支付方式
+with temp as
+(select 'tc_money_amt1,tc_money_amt2,tc_money_amt3,tc_money_amt4,tc_money_amt5,tc_money_amt6,tc_money_amt7' tc_code,
+        '现金,刷卡,公司现金券,商场购物卡,积分支付,促销印花,全单即减' tc_name,
+        '1,2,3,4,5,6,7' tc_value,
+        '1,1,1,1,0,0,0' tc_is_performance from dual)
+select substr(tc_code,instr(tc_code,',',1,rn)+1,instr(tc_code,',',1,rn+1)-instr(tc_code,',',1,rn)-1) tc_code,
+       substr(tc_name,instr(tc_name,',',1,rn)+1,instr(tc_name,',',1,rn+1)-instr(tc_name,',',1,rn)-1) tc_name,
+       substr(tc_value,instr(tc_value,',',1,rn)+1,instr(tc_value,',',1,rn+1)-instr(tc_value,',',1,rn)-1) tc_value,
+       substr(tc_is_performance,instr(tc_is_performance,',',1,rn)+1,instr(tc_is_performance,',',1,rn+1)-instr(tc_is_performance,',',1,rn)-1) tc_is_performance from
+(
+  select ','||t1.tc_code||',' tc_code,
+         ','||t1.tc_name||',' tc_name,
+         ','||t1.tc_value||',' tc_value,
+         ','||t1.tc_is_performance||',' tc_is_performance,
+         t2.rn 
+         from temp t1,
+  (select rownum rn from all_objects where rownum <= (select length(tc_code)-length(replace(tc_code,',',''))+1 from temp)) t2
+)

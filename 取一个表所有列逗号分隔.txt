@@ -1,0 +1,3 @@
+
+SELECT wm_concat(COLUMN_NAME) FROM
+(SELECT COLUMN_NAME from ALL_TAB_COLUMNS where table_name='TB_ACC_PLU_AUCOST_0C' and owner='RAY4' ORDER BY column_id) t

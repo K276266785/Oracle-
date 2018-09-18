@@ -1,0 +1,27 @@
+--2012年全年上班日期设定
+SELECT f_get_year(tc_tx_date) AS tc_year,
+       f_get_month(tc_tx_date) AS tc_month,
+       tc_weekday,
+       tc_tx_date,
+       (CASE WHEN (tc_date BETWEEN '2012-01-01' AND '2012-01-03' OR
+                   tc_date BETWEEN '2012-01-22' AND '2012-01-28' OR
+                   tc_date BETWEEN '2012-04-02' AND '2012-04-04' OR
+                   tc_date BETWEEN '2012-04-29' AND '2012-05-01' OR
+                   tc_date BETWEEN '2012-06-22' AND '2012-06-24' OR
+                   tc_date BETWEEN '2012-09-30' AND '2012-10-07' ) THEN 0 ELSE
+         (CASE WHEN tc_date IN ('2012-01-21','2012-01-29','2012-03-31','2012-04-01','2012-04-28','2012-09-29') THEN 1 ELSE 
+           (CASE WHEN tc_weekday='星期六' OR tc_weekday='星期日' THEN 0 ELSE 1 END)END)END) AS tc_status FROM
+         (SELECT tc_tx_date,
+                 to_char(tc_tx_date,'yyyy-mm-dd') AS tc_date,
+                 f_get_date_weekday(tc_tx_date) AS tc_weekday FROM
+         (SELECT TO_DATE('2012/01/01' , 'yyyy/mm/dd ' ) +LEVEL - 1  AS tc_tx_date
+          FROM DUAL 
+          CONNECT BY LEVEL <= 
+          TRUNC(TO_DATE('2012/12/31', 'yyyy/mm/dd') - 
+          TO_DATE('2012/01/01', 'yyyy/mm/dd')) + 1 ) t
+          ) tt
+
+
+--mssql update
+update tb_sys_onwork_date
+set tc_tx_date=substring(convert(varchar,convert(datetime,tc_tx_date),120),1,10)

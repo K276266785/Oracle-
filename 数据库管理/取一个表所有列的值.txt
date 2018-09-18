@@ -1,0 +1,58 @@
+--参考文档:https://www.cnblogs.com/huanghongbo/p/7650499.html
+
+create or replace procedure p_test222(a_out_msg out varchar2) is
+  /*
+    --kai 2015-03-23
+  */
+
+  TYPE typecursor IS REF CURSOR;
+  cursrc    typecursor;
+  curid     NUMBER;
+  desctab   dbms_sql.desc_tab;
+  colcnt    NUMBER;
+  vname     VARCHAR2(50);
+  vnum      NUMBER;
+  vdate     DATE;
+  rownumber NUMBER := 2;
+
+  sqlstmt VARCHAR2(2000);
+  v_msg   varchar2(10000);
+begin
+  sqlstmt := 'SELECT * FROM TMP_KAI_TEST1 where id=:rownumber';
+  -- 打开光标
+  OPEN cursrc FOR sqlstmt USING rownumber;
+
+  -- 从本地动态SQL转换为DBMS_SQL
+  curid := dbms_sql.to_cursor_number(cursrc);
+  --获取游标里面的数据列项数和每个数据列的属性，比如列名，类型，长度等
+  dbms_sql.describe_columns(curid, colcnt, desctab);
+  -- 定义列
+  FOR i IN 1 .. colcnt LOOP
+    --此处是定义游标中列的读取类型，可以定义为字符，数字和日期类型，
+    IF desctab(i).col_type = 2 THEN
+      dbms_sql.define_column(curid, i, vnum);
+    ELSIF desctab(i).col_type = 12 THEN
+      dbms_sql.define_column(curid, i, vdate);
+    ELSE
+      dbms_sql.define_column(curid, i, vname, 50);
+    END IF;
+  END LOOP;
+  -- DBMS_SQL包获取行
+  --从游标中把数据检索到缓存区（BUFFER）中，缓冲区 的值只能被函数COULUMN_VALUE()所读取
+  WHILE dbms_sql.fetch_rows(curid) > 0 LOOP
+    FOR i IN 1 .. colcnt LOOP
+      IF (desctab(i).col_type = 1) THEN
+        dbms_sql.column_value(curid, i, vname);
+        v_msg := v_msg || desctab(i).col_name || ' ' || vname || ', ';
+      ELSIF (desctab(i).col_type = 2) THEN
+        dbms_sql.column_value(curid, i, vnum);
+        v_msg := v_msg || desctab(i).col_name || ' ' || vnum || ', ';
+      ELSIF (desctab(i).col_type = 12) THEN
+        dbms_sql.column_value(curid, i, vdate);
+        v_msg := v_msg || desctab(i).col_name || ' ' || to_char(vdate, 'YYYY-MM-DD HH24:MI:SS') || ', ';
+      END IF;
+    END LOOP;
+  END LOOP;
+
+  a_out_msg := v_msg;
+end;

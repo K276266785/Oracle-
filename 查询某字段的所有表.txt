@@ -1,0 +1,23 @@
+--demo1
+select 'alter table '||t.table_name||' drop column TC_OUT_DISCOUNT;alter table '||t.table_name||' drop column TC_IN_PRICE;',
+  t.*
+  from user_tables t
+ where exists
+ (select t1.*
+          from user_tab_cols t1
+         where t1.table_name = t.table_name
+           and t1.column_name in ('TC_OUT_DISCOUNT', 'TC_IN_DISCOUNT'))
+   and t.table_name like 'TB_%_DT%';
+
+--demo2
+select ' select t.tc_rowid,t.tc_color_rowid from ' || t.table_name || 
+                ' t where t.tc_color_rowid in (select t1.tc_rowid from tb_dict_color_0a t1 where substr(t1.tc_code,1,1) between ''A'' and ''Z'' and t1.tc_code like ''ML%'');' as modify_col,
+       
+       t.table_name
+  from user_tables t
+ where exists
+ (select t1.*
+          from user_tab_cols t1
+         where t1.table_name = t.table_name
+           and t1.column_name in ('TC_COLOR_ROWID'))
+   and t.table_name like 'TB_%';

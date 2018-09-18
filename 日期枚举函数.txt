@@ -1,0 +1,94 @@
+--动态sql日期变量
+v_sql := 'SELECT COUNT(*) FROM USER_OBJECTS WHERE CREATED<='||chr(39)||v_date||chr(39);
+
+select rownum from dual CONNECT BY rownum <=10
+
+--取上月日期
+select trunc(add_months(sysdate,-1),'month') from dual
+
+--取本月第一天和最后一天
+Select trunc(to_date('2010-08-25','yyyy-mm-dd'),'month') From dual
+select  to_char(last_day(sysdate), 'yyyy-mm-dd') From dual
+
+--计算两个日期之前的所有日期
+SELECT TO_DATE('2013-02-26' , 'yyyy-mm-dd' ) +LEVEL - 1 
+FROM DUAL 
+CONNECT BY LEVEL <= 
+TRUNC(TO_DATE('2013-03-21', 'yyyy-mm-dd') - 
+TO_DATE('2013-02-26', 'yyyy-mm-dd')) + 1 
+
+--列出两个日期之前的所有日期及星期几
+select to_date( 2008 || '0101' , 'yyyymmdd' ) + rownum - 1 rq, 
+       to_char(to_date( 2008 || '0101' , 'yyyymmdd' ) + rownum - 1 , 'day' ) day 
+       from ( select rownum from dual 
+       connect by rownum <= to_date( 2008 || '1231' , 'yyyymmdd' ) - to_date( 2008 || '0101' , 'yyyymmdd' )+ 1 ); 
+
+
+--计算两个日期之前的所有月份
+SELECT ROWNUM AS tc_month_id,
+       tc_month FROM
+(SELECT tc_month FROM
+(
+SELECT DISTINCT f_get_year_and_month(to_date('2007-11-10' , 'yyyy-mm-dd')+LEVEL-1) AS tc_month 
+FROM DUAL 
+CONNECT BY LEVEL <= 
+TRUNC(TO_DATE('2008-04-30', 'yyyy-mm-dd') - 
+TO_DATE('2007-11-10', 'yyyy-mm-dd')) + 1 
+) t
+ORDER BY tc_month) tt
+
+--动态SQL写法
+V_SQL := 'SELECT ROWNUM AS tc_month_id,
+                   tc_tx_year||tc_tx_month as tc_tx_yyyymm FROM
+            (SELECT DISTINCT f_get_year(tc_tx_date) as tc_tx_year,
+                    f_get_month(tc_tx_date) as tc_tx_month FROM
+            (
+            SELECT to_date('''||v_tx_date||''' , ''yyyy-mm-dd'')+LEVEL-1 AS tc_tx_date 
+            FROM DUAL 
+            CONNECT BY LEVEL <= 
+            TRUNC(sysdate -  TO_DATE('''||v_tx_date||''', ''yyyy-mm-dd'')) + 1 
+            ) t
+            ORDER BY tc_tx_year,tc_tx_month) tt';
+
+--取当前日期的年份
+select to_char(sysdate,'YYYY') from dual
+--取当前日期的月份
+select to_char(sysdate,'MM') from dual
+--补位函数
+select   lpad(tc_month,2,'0') from   tb_store_target_0a;
+
+--计算本月的第几周
+SELECT CASE
+         WHEN TRUNC(sysdate, 'mm') = TRUNC(sysdate) OR
+              TO_CHAR(TRUNC(sysdate, 'mm'), 'IW') =
+              TO_CHAR(TRUNC(sysdate), 'IW') THEN
+          1
+         ELSE
+          TO_CHAR(TRUNC(sysdate), 'IW') -
+          TO_CHAR(TRUNC(sysdate, 'mm'), 'IW') + 1
+       END num
+FROM DUAL
+
+--计算本年的第几周
+select to_char(sysdate,'WW') from dual
+select to_char(t1.tc_tx_date+1,''ww'') as tc_week,
+
+--计算两日期之间的天数
+select   trunc(sysdate-to_date( '2010-11-01 ', 'yyyy-mm-dd '))   from   dual; 
+
+--取第一天和最后一天
+--上周
+select trunc(sysdate,'iw')-7 from dual;--上周第一天
+select trunc(sysdate,'iw')-1 from dual;--上周最后一天
+--本周
+select trunc(sysdate, 'd') + 1 from dual;
+select trunc(sysdate, 'd') + 7 from dual;
+--本月
+select trunc(sysdate, 'mm') from dual;
+select last_day(trunc(sysdate)) from dual;
+--本季
+select trunc(sysdate, 'Q') from dual;
+select add_months(trunc(sysdate, 'Q'), 3) - 1 from dual;
+--本年
+select trunc(sysdate, 'yyyy') from dual;
+select add_months(trunc(sysdate, 'yyyy'), 12) - 1 from dual;

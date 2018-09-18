@@ -1,0 +1,14 @@
+ORACLE恢复误删除的对象(表、存储过程等)--整理中  
+
+2011-01-11 16:15:31|  分类： oracle |  标签：存储过程  oracle  恢复误删除   |举报|字号 订阅
+1.恢复存储过程
+
+原理就是利用了oracle里所有的存储过程的源代码都是存在dba_source里，而drop某个存储过程的时候，oracle这里肯定要去dba_source里把相关的源代码给delete掉，既然是delete，那就好办咯，直接flashback query就可以了。如下：
+
+select * from dba_source 
+as of timestamp to_timestamp('2010-06-11 10:59:00', 'YYYY-MM-DD HH24:MI:SS') 
+where owner='' and name =''
+
+2.恢复误删除的表
+
+flashback table 表名 to before drop

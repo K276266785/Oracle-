@@ -1,0 +1,34 @@
+
+create table User_Salary(UserName NVARCHAR2(200),Month NVARCHAR2(20),Salary INT);
+
+insert into User_Salary(UserName,Month,Salary) values('AAA','2010/12',1000);   
+insert into User_Salary(UserName,Month,Salary) values('AAA','2011/01',2000);   
+insert into User_Salary(UserName,Month,Salary) values('AAA','2011/02',3000);   
+insert into User_Salary(UserName,Month,Salary) values('BBB','2010/12',2000);   
+insert into User_Salary(UserName,Month,Salary) values('BBB','2011/01',2500);  
+insert into User_Salary(UserName,Month,Salary) values('BBB','2011/02',2500);  
+
+go
+  
+
+SELECT A.UserName,
+       A.Month,
+       MAX(A.Salary) as Salary,
+       SUM (B.Salary) as Accumulation
+       FROM User_Salary A inner join User_Salary B 
+       ON A.UserName = B.UserName
+       where B.Month <= A.Month
+       group by A.UserName,A.Month 
+       order by A.UserName,A.Month    
+go
+
+
+
+select t.*,
+sum(t.salary) over (partition BY t.username ORDER BY t.salary) as sum_day
+from User_Salary t
+
+--µ¥ÁÐÀÛ¼Ó
+sum(t.tc_value) over (ORDER BY tc_date) as tc_svalue
+    
+drop table User_Salary

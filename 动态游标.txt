@@ -1,0 +1,42 @@
+--使用动态游标
+  DECLARE
+    TYPE refcursor IS REF CURSOR;
+    v_cursor REFCURSOR;
+    v_code         VARCHAR(22);
+    v_table_name   VARCHAR(50);
+  BEGIN
+    -- 动态SQL
+    v_sql := 'select tc_code,tc_table_name from '||V_TMPP_RESULT_0B;
+    -- 打开游标.
+    OPEN v_cursor FOR v_sql;
+    -- 循环处理.
+    LOOP
+      -- 填充数据.
+      FETCH v_cursor INTO v_code,v_table_name;
+      -- 无数据时 退出循环.
+      EXIT WHEN v_cursor%NOTFOUND;
+      -- 调用归档
+      P_KAI_close_flag_BRO(v_code,v_table_name);
+    END LOOP;
+    -- 关闭游标.
+    CLOSE v_cursor;
+  END;
+
+
+
+declare
+      type refcursor is ref cursor;
+      v_cursor     refcursor;
+      v_code       varchar(22);
+      v_table_name varchar(50);
+    begin
+      v_sql := 'select tc_code,tc_table_name from ' || v_tmpp_result_0b;
+      open v_cursor for v_sql;
+      loop
+        fetch v_cursor into v_code, v_table_name;
+        exit when v_cursor%notfound;
+        --调用归档
+        p_kai_close_flag_bro(v_code, v_table_name);
+      end loop;
+      close v_cursor;
+    end;

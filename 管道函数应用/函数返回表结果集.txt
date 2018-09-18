@@ -1,0 +1,50 @@
+--demo1
+create or replace type Type_Row_Test as object
+ (
+  tc_rowid varchar2(50),
+  tc_code varchar2(50),
+  tc_name varchar2(50)
+  )
+
+create or replace type Type_Table_Test  as table of Type_Row_Test
+
+CREATE OR REPLACE FUNCTION F_Test(pIdIn number) return Type_Table_Test
+  pipelined --管道
+ as
+  v Type_Row_Test;
+begin
+  for thisrow in (SELECT tc_rowid, tc_code, tc_name
+                    FROM tb_store_0a
+                  where rownum<=pIdIn) loop
+    v := Type_Row_Test(thisrow.tc_rowid, thisrow.tc_code, thisrow.tc_name);
+    pipe row(v);
+  end loop;
+  return;
+end;
+
+select * from table(F_Test(20));  
+
+
+create type row_type as object
+(
+  a varchar2(10),
+  v varchar2(10)
+); --定义行对象
+
+--demo2
+create type table_type as table of row_type; --定义表对象
+
+create or replace function test_fun(a in varchar2, b in varchar2)
+  return table_type pipelined is v row_type; --定义v为行对象类型
+begin
+  for thisrow in (select a, b
+                    from mytable
+                   where col1 = a
+                     and col2 = b) loop
+    v := row_type(thisrow.a, thisrow.b);
+    pipe row(v);
+  end loop;
+  return;
+end; 
+
+select * from table(test_fun('123', '456'));
