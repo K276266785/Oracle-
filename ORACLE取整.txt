@@ -1,3 +1,4 @@
+--常用函数
 取整(大)  　　 select ceil(-1.001) value from dual 　　
 
 取整（小） 　　select floor(-1.001) value from dual 　　
