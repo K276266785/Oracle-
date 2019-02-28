@@ -60,3 +60,8 @@ where rownum <=10 /* 修改此处调整返回的session数量 */
 )t3
 where s.paddr=p.addr and s.sql_address=q.address and s.sid=t3.sid
 order by cpu_used_seconds desc,s.sid;
+
+--查看数据库并发数
+select value from v$parameter where name ='processes';  
+
+select count(*) from v$process ; 
