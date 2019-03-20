@@ -1,0 +1,107 @@
+select owner, count(1)
+  from dba_tables
+ where partitioned = 'YES'
+ group by owner; -- 查询数据库中不同用户的分区表的数目
+ 
+select *
+  from dba_tables
+ where partitioned = 'YES'
+   and owner = 'BIETL'; -- 查询数据库中用户的分区表
+ 
+select *
+  from dba_part_key_columns
+ where name = 'T_DM_CRM_ANALYSIS_P'
+   and owner = 'BIETL'; --查询数据库中 该用户下的对应表的分区字段
+ 
+ ----查看该数据库中 所有用户的 所有分区表的和对应分区字段
+select * from all_part_key_columns;
+ 
+----查看该数据库中 所有用户的 所有分区表的和对应分区字段
+select TABLE_NAME, PARTITION_NAME, HIGH_VALUE
+  from user_tab_partitions
+ where table_name = 'T_FACT_MONTH_BALANCE_TEST';
+
+select *
+  from all_part_key_columns t
+ where t.owner = 'BIETL'
+   and t.name in（select table_name from dba_tables
+ where partitioned = 'YES'
+   and owner = 'BIETL' ）;
+
+-------------------------------------------------------------------
+分区表维护:
+主要的就是 删除分区、增加分区、合并分区、移动分区、重命名、截断分区
+
+删除分区: alter table range_orders drop partition p2;
+
+增加分区: alter table range_orders add partition p2 values less than (to_date('20140430','yyyymmdd')) tablespace user02;
+
+合并分区: alter table range_orders merge partition p1,p2 into partition p2;
+
+移动分区: alter table range_orders move partition p2 tablespace user05;
+
+重命名: alter table range_orders rename partition p2 to p1;
+
+截断分区: alter table range_orders truncate partition p1;
+-------------------------------------------------------------------
+
+-------------------------------------------------------------------
+--按年创建分区表
+create table test_part
+(
+   ID NUMBER(20) not null,
+   REMARK VARCHAR2(1000),
+   create_time DATE
+)
+PARTITION BY RANGE (CREATE_TIME) INTERVAL (numtoyminterval(1, 'year'))
+(partition part_t01 values less than(to_date('2018-11-01', 'yyyy-mm-dd')));
+
+--创建主键
+alter table test_part add constraint test_part_pk primary key (ID) using INDEX;
+-- Create/Recreate indexes 
+create index test_part_create_time on TEST_PART (create_time);
+
+--按月创建分区表
+create table test_part
+(
+   ID NUMBER(20) not null,
+   REMARK VARCHAR2(1000),
+   create_time DATE
+)
+PARTITION BY RANGE (CREATE_TIME) INTERVAL (numtoyminterval(1, 'month'))
+(partition part_t01 values less than(to_date('2018-11-01', 'yyyy-mm-dd')));
+
+--创建主键
+alter table test_part add constraint test_part_pk primary key (ID) using INDEX;
+
+--按天创建分区表
+create table test_part
+(
+   ID NUMBER(20) not null,
+   REMARK VARCHAR2(1000),
+   create_time DATE
+)
+PARTITION BY RANGE (CREATE_TIME) INTERVAL (NUMTODSINTERVAL(1, 'day'))
+(partition part_t01 values less than(to_date('2018-11-12', 'yyyy-mm-dd')));
+
+--创建主键
+alter table test_part add constraint test_part_pk primary key (ID) using INDEX;
+
+--按周创建分区表
+create table test_part
+(
+   ID NUMBER(20) not null,
+   REMARK VARCHAR2(1000),
+   create_time DATE
+)
+PARTITION BY RANGE (CREATE_TIME) INTERVAL (NUMTODSINTERVAL (7, 'day'))
+(partition part_t01 values less than(to_date('2018-11-12', 'yyyy-mm-dd')));
+
+--创建主键
+alter table test_part add constraint test_part_pk primary key (ID) using INDEX;
+-------------------------------------------------------------------
+
+--表分区包
+https://blog.csdn.net/renfengjun/article/details/18602727
+--test_demo
+call dba_tools.dba_autoextend_partitions('ORDERS','m',2) ;
