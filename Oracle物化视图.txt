@@ -1,3 +1,6 @@
+﻿f_get_company_By_store_rowid(t1.tc_from_store_rowid) as tc_from_company_rowid,
+f_get_company_By_store_rowid(t1.tc_to_store_rowid) as tc_to_company_rowid,
+
 对于oracle10g简单方法:
 1. 先建立一个物化视图,不用指明刷新参数,只要create materialized view,如
   CREATE MATERIALIZED VIEW mv_emp  
@@ -15,21 +18,43 @@ END;
 
 3. 用ORACLE 10g的scheduler每天12:00和19:00定期刷新物化视图
 
-  BEGIN
+-----------------------------------------------
+--不带参数
+BEGIN
 DBMS_SCHEDULER.CREATE_JOB(
 job_name => 'auot_refresh_mview_job',
 job_type => 'STORED_PROCEDURE',
 job_action => 'scott.auto_refresh_mview_job_proc',
 start_date => SYSDATE,
-repeat_interval => 'FREQ=DAILY; BYHOUR=12,19',
+repeat_interval => 'FREQ=DAILY;BYHOUR=2;BYMINUTE=50;BYSECOND=0',
 enabled => TRUE,
 comments => 'Refresh materialized view mv_emp'
 );
 END;
-/
+-----------------------------------------------
+
+-----------------------------------------------
+--带参数
+begin
+  dbms_scheduler.create_job(job_name            => 'TEST01',
+                            job_type            => 'STORED_PROCEDURE',
+                            job_action          => 'mytest',
+                            number_of_arguments => 2,
+                            repeat_interval     => 'FREQ=DAILY;INTERVAL=3',
+                            enabled             => FALSE);
+end;
+
+begin
+  DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE(job_name          => 'TEST01',
+                                        argument_position => 1,
+                                        argument_value    => 'a');
+  DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE(job_name          => 'TEST01',
+                                        argument_position => 2,
+                                        argument_value    => to_char(sysdate - 1, 'yyyymmdd'));
+end;
+-----------------------------------------------
 
 4. 删除scheduler对象的方法
-
 BEGIN
 DBMS_SCHEDULER.DROP_JOB(
 job_name => 'auot_refresh_mview_job'
@@ -37,10 +62,9 @@ job_name => 'auot_refresh_mview_job'
 END;
 /
 
-
 -- job 查询
  select owner, job_name, state from dba_scheduler_jobs;
- select job_name, state from user_scheduler_jobs;
+
  select job_name, 
         job_action,
         repeat_interval,
@@ -55,12 +79,13 @@ END;
  order by job_name;
 
  -- job 启用
- begin
- dbms_scheduler.enable('refresh_pos_sale_for_month_job');
- end;
-
+begin
+  dbms_scheduler.enable('refresh_pos_sale_for_month_job');
+end;
 
 -- job 运行
- begin
+begin
  dbms_scheduler.run_job('refresh_pos_sale_for_month_job',TRUE); -- true代表同步执行
- end;
+end;
+
+raise_application_error(-20000,v_count);
