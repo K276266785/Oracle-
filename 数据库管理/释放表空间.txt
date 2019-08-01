@@ -1,3 +1,10 @@
+--查看块总数
+SELECT SEGMENT_NAME, EXTENTS, BLOCKS
+ from USER_SEGMENTS WHERE SEGMENT_NAME = 'DM_OMS_EMP_PERFORMANCE_DT_DAY';
+ 
+--查看高水位
+SELECT BLOCKS, EMPTY_BLOCKS FROM DBA_TABLES WHERE TABLE_NAME = 'DM_OMS_EMP_PERFORMANCE_DT_DAY'
+
 --检查数据库表空间占用空间情况:
  select tablespace_name, sum(bytes) / 1024 / 1024 / 1024 GB
    from dba_data_files
