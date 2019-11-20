@@ -1,5 +1,21 @@
 https://blog.csdn.net/newegg2009/article/details/7574707
 
+--listagg
+with temp as(  
+  select 500 population, 'China' nation ,'Guangzhou' city from dual union all  
+  select 1500 population, 'China' nation ,'Shanghai' city from dual union all  
+  select 500 population, 'China' nation ,'Beijing' city from dual union all  
+  select 1000 population, 'USA' nation ,'New York' city from dual union all  
+  select 500 population, 'USA' nation ,'Bostom' city from dual union all  
+  select 500 population, 'Japan' nation ,'Tokyo' city from dual   
+)  
+select population,  
+       nation,  
+       city,  
+       listagg(city,',') within GROUP (order by city) over (partition by nation) rank  
+from temp 
+
+
 1.创建表：
 create table test(id int,name varchar(20),quarter int,profile int))
 
@@ -35,3 +51,23 @@ profiles
 for quarters in ([Q1],[Q2],[Q3],[Q4])
 )
 as unpvt
+
+
+4.按数量拆分行
+create table tmp_kai_test1(
+       tc_code varchar2(100),
+       tc_qty number);
+
+select rowid,t.* from tmp_kai_test1 t
+
+
+with tb2 as
+ (select rownum rn
+    from (select max(abs(tc_qty)) as maxlevel from tmp_kai_test1)
+  connect by 1 = 1
+         and level <= maxlevel)
+select tb1.tc_code, 1*sign(tb1.tc_qty) as tc_new_qty
+  from tmp_kai_test1 tb1, tb2
+ where abs(tb1.tc_qty) >= rn
+   and tb1.tc_qty<>0
+ order by tb1.tc_code;
