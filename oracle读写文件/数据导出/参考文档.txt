@@ -1,0 +1,12 @@
+https://www.jb51.net/article/186918.htm
+
+set colsep  , #分割符
+set feedback off #回显本次sql命令处理记录条数
+set heading off # 输出标题
+set newp none #设置查询出来的数据分多少页显示，如果需要连续的数据，中间不要出现空行就把newp设置为none
+set pagesize 0 # 输出每页行数，为了避免分页设置为0
+set linesize 200 # 每行大小，如果设置太小，会分行，最好是超好输出最大值
+set trimout on # 去除标准输出每行的拖尾空格
+set termout off #显示脚本中的命令的执行结果
+set echo on #设置运行命令是否显示语句
+set numwidth 12 # 输出number类型域长度

@@ -8,3 +8,9 @@ CONNECT BY LEVEL <= length('1101,Yokohama,Japan,1.5.105') - length(REPLACE('1101
 --查找Cx-的帐号
 select * from tb_user_info_0a
 where regexp_like(tc_code,'C[[:digit:]]-+');
+
+--查找加盟店铺代号
+select regexp_substr('aba123ab1100180212ab',
+                                        '10[[:digit:]]{6}',
+                                        1,
+                                        1) from dual

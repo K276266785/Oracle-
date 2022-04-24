@@ -1,0 +1,35 @@
+drop table t;
+
+create table t(text xmltype);
+
+INSERT INTO t VALUES (XMLType.CreateXML(
+'<?xml version="1.0"?>
+<fall>
+<name>dingjun123</name>
+<county>china</county>
+<state>xxx</state>
+<url>
+http://michiganwaterfalls.com/autrain_falls/autrain_falls.html
+</url>
+</fall>'));
+
+INSERT INTO t VALUES (XMLType.CreateXML(
+'<?xml version="1.0"?>
+<fall>
+<name>jack</name>
+<county>china</county>
+<state>yyyy</state>
+<url>
+http://michiganwaterfalls.com/autrain_falls/autrain_falls.html
+</url>
+</fall>'));
+commit;
+
+select extractValue(value(m), '/fall/name') name,
+extractValue(value(m), '/fall/county') county,
+extractValue(value(m), '/fall/state') state
+from t,
+table( xmlsequence(extract(t.text,'/fall'))) m ;
+————————————————
+版权声明：本文为CSDN博主「myjcwy」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/myjcwy/article/details/84044112

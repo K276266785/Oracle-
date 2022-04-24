@@ -1,3 +1,6 @@
+--参考文档
+https://blog.csdn.net/qiange520/article/details/50515317
+
 select cid,cname,cpid  from yourtable  connect by prior cid=cpid start with cid=1
 
 
@@ -25,3 +28,10 @@ create table DEP
         FROM DEP
         START WITH UPPERDEPID IS null
         CONNECT BY PRIOR DEPID = UPPERDEPID;
+
+--查找一个节点的所有直属父节点（祖宗）
+select *
+  from bietl.dw_smartbi_rpt_tree
+  --where rpt_id<>'I8a8c18ed016c185618560068016c1881943b007a' 
+ start with rpt_id = 'I8a8c18ed017212d412d487660172c5f11ea8260d'
+connect by prior rpt_parent_id = rpt_id;

@@ -1,3 +1,6 @@
+--锁表视图
+select * from v_dm_lock_session
+
 --查看锁表进程SQL语句1： 
 select sess.sid, 
     sess.serial#, 
@@ -5,18 +8,19 @@ select sess.sid,
     lo.os_user_name, 
     ao.object_name, 
     lo.locked_mode 
-    from v$locked_object lo, 
+    from gv$locked_object lo, 
     dba_objects ao, 
-    v$session sess 
+    gv$session sess 
 where ao.object_id = lo.object_id and lo.session_id = sess.sid; 
 
 --查看锁表进程SQL语句2： 
-select * from v$session t1, v$locked_object t2 where t1.sid = t2.SESSION_ID; 
+select * from gv$session t1, gv$locked_object t2 where t1.sid = t2.SESSION_ID; 
+select distinct 'alter system kill session '''||sid||','||serial#||''';' from v$session t1, v$locked_object t2 where t1.sid = t2.SESSION_ID; 
 
 --杀掉锁表进程： 
 --如有記錄則表示有lock，記錄下SID和serial# ，將記錄的ID替換下面的738,1429，即可解除LOCK 
 alter system kill session '1854,38775'; 
-
+alter system kill session '1854,38775,@1'; 
 
 select distinct('alter system kill session '''||sess.sid||','|| 
     sess.serial#||''';') as tc1
@@ -65,3 +69,12 @@ order by cpu_used_seconds desc,s.sid;
 select value from v$parameter where name ='processes';  
 
 select count(*) from v$process ; 
+
+--kill INACTIVE session
+select A.SID,B.SPID,A.SERIAL#,a.lockwait,A.USERNAME,A.OSUSER,a.logon_time,a.last_call_et/3600 LAST_HOUR,A.STATUS,
+'orakill '||sid||' '||spid HOST_COMMAND,
+'alter system kill session '''||A.sid||','||A.SERIAL#||''';' SQL_COMMAND
+from v$session A,V$PROCESS B 
+where A.PADDR=B.ADDR AND SID>6 and
+      A.status='INACTIVE' and
+      A.username='SMART_BI2';

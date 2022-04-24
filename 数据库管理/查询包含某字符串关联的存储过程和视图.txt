@@ -1,0 +1,9 @@
+--查询存储过程+视图
+select distinct name 
+  from user_source
+ where upper(text) like '%DM_DCRM_CARD_OVERLAP_SALES_RPT%'
+   and type = 'PROCEDURE'
+union
+select distinct view_name
+  from user_views t
+ where upper(text_vc) like '%DM_DCRM_CARD_OVERLAP_SALES_RPT%'

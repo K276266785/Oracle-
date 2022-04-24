@@ -1,0 +1,85 @@
+create or replace procedure p_upd_month_balance is
+  /*
+    --ken Li 2019-01-18
+    --模块功能:批量更新月结存表_币种及吊牌额
+  */
+  --v_sql          varchar2(30000);
+  v_max_num      number;
+  v_upd_num      number;
+begin
+  --更新条数最大值
+  v_max_num := 10000;  
+  --每次更新的条数
+  v_upd_num := 1000;
+  
+  --只取一次(多币种吊牌价)
+  /*v_sql := 'select t3.tc_code as tc_sku,
+                   t1.matnr as tc_plu_code, 
+                   t1.waerk as tc_currency_code,
+                   max(t2.kbetr) as tc_tag_price
+              from T_SAP_A900 t1
+              join T_SAP_KONP t2
+                on t1.KNUMH = t2.KNUMH
+              join t_dim_plu t3
+                on t1.matnr = t3.tc_plu_code  
+             where t1.mandt = t2.mandt
+               and t1.KSCHL = ''ZPR1''
+               and t1.datbi = ''99991231''
+               and t1.mandt = ''800''
+             group by t1.waerk, t1.matnr,t3.tc_code';
+  p_create_tmp_table_bro(v_sql,'tmp_sap_plu_currency_map');*/
+  
+  --1.更新币种
+  declare
+    row_id_table    dbms_sql.Urowid_Table;
+    p_value_table   dbms_sql.varchar2_Table;
+    cursor v_cur is
+      select /*+ use_hash(t1,t2) parallel(t1,4) parallel(t2,4) */
+       t2.tc_currency_code, t1.rowid
+       from t_fact_month_balance t1, t_dim_store t2
+       where t1.store_code = t2.tc_code and
+             nvl(t1.tc_is_upd,0) = 0 
+            -- and rownum <= v_max_num
+       order by t1.rowid;
+  begin
+    open v_cur;
+    loop
+      exit when v_cur%notfound;
+      fetch v_cur bulk collect into p_value_table, row_id_table limit v_upd_num;
+      forall i in 1 .. row_id_table.count
+        update t_fact_month_balance
+           set currency = p_value_table(i),
+               tc_is_upd = 1
+         where rowid = row_id_table(i);
+      commit;
+    end loop;
+  end;
+  
+  --2.更新吊牌额
+  declare
+    row_id_table2    dbms_sql.Urowid_Table;
+    p_value_table2   dbms_sql.number_Table;
+    cursor v_cur2 is
+      select /*+ use_hash(t1,t2) parallel(t1,4) parallel(t2,4) */
+       t2.tc_tag_price, t1.rowid
+       from t_fact_month_balance t1, tmp_sap_plu_currency_map t2
+       where t1.currency = t2.tc_currency_code and
+             t1.sku = t2.tc_sku and
+             t1.tc_is_upd = 1 
+            -- and rownum <= v_max_num
+       order by t1.rowid;
+  begin
+    open v_cur2;
+    loop
+      exit when v_cur2%notfound;
+      fetch v_cur2 bulk collect into p_value_table2, row_id_table2 limit v_upd_num;
+      forall i in 1 .. row_id_table2.count
+        update t_fact_month_balance
+           set tag_amt = nvl(qty*p_value_table2(i),0),
+               tc_is_upd = 2
+         where rowid = row_id_table2(i);
+      commit;
+    end loop;
+  end;
+  
+end;

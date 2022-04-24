@@ -1,6 +1,21 @@
+--method1
 select * from dba_objects where object_name like 'TMPP_STK_PL_CHK_DT_0A'
 
-select 'alter system kill session '''||SID||','||SERIAL#||''';' from V$session where SID in ( select sid from v$enqueue_lock t where t.type='TO' and id1='108764' )
+select 'alter system kill session '''||SID||','||SERIAL#||''';' from V$session 
+where SID in ( select sid from v$enqueue_lock t where t.type='TO' and id1='108764' );
+
+--method2
+select 'alter system kill session ''' || SID || ',' || SERIAL# || ''';'
+  from V$session
+ where SID in
+       (select sid
+          from v$enqueue_lock t
+         where t.type = 'TO'
+           and id1 in
+               (select object_id
+                  from dba_objects
+                 where object_name like ('TMPP_STR_0B'))
+) ;  
 
 alter system kill session '155,17941';
 alter system kill session '578,34331';

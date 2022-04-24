@@ -32,3 +32,12 @@ from User_Salary t
 sum(t.tc_value) over (ORDER BY tc_date) as tc_svalue
     
 drop table User_Salary
+
+--计算多行日期的间隔
+--参考文档 https://www.cnblogs.com/shengs/p/5954818.html
+Oracle高级查询之over(partition by...)
+select t.*,
+       lead(tc_date) over(partition by tc_code order by tc_date) 
+       --lead(tc_date,1,tc_date) over(partition by tc_code order by tc_date) 
+       --lead(tc_date,1,trunc(sysdate)) over(partition by tc_code order by tc_date)  
+       from tmp_kai_111 t

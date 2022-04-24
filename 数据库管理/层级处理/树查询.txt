@@ -1,0 +1,155 @@
+Oracle树查询(查询所有子节点，父节点等等)
+
+ Oracle树查询的最重要的就是select...start with... connect by ...prior 语法了。依托于该语法，我们可以将一个表形结构的中以树的顺序列出来。在下面列述了Oracle中树型查询的常用查询方式以及经常使用的与树查询相关的Oracle特性函数等，在这里只涉及到一张表中的树查询方式而不涉及多表中的关联等。
+
+ 以我做过的一个项目中的表为例，表结构如下：
+Sql代码
+ CREATE TABLE FLFL   
+ (   
+ID       NUMBER                                NOT NULL,   
+MC       NVARCHAR2(20),   
+FLJB     NUMBER,   
+SJFLID   NUMBER   
+)  
+
+      FLJB是作为树的级别，在很多查询中可以加快SQL的查询效率。在下面演示的功能基本上不使用这个关键字。
+      SJFLID存储的是上级ID，如果是顶级父节点，该SJFLID为null（得补充一句，当初的确是这样设计的，不过现在知道，表中最好别有null记录，这会引起全文扫描，建议改成0代替)。
+
+      我们从最基本的操作，逐步列出树查询中常见的操作，所以查询出来的节点以家族中的辈份作比方。
+
+      1. 查找树中的所有顶级父节点（辈份最长的人）。 假设这个树是个目录结构，那么第一个操作总是找出所有的顶级节点，再根据该节点找到其下属节点。
+Sql代码
+SELECT * FROM flfl WHERE sjflid IS NULL;  
+这是个引子，没用到树型查询。
+
+2.查找一个节点的直属子节点（所有儿子）。 如果查找的是直属子类节点，也是不用用到树型查询的。
+Sql代码
+ SELECT * FROM flfl WHERE sjflid = 819459;  
+ 这个可以找到ID为819459的直属子类节点。
+
+3.查找一个节点的所有 直属子节点（所有后代）。
+Sql代码
+SELECT * FROM flfl START WITH ID = 819459 CONNECT BY sjflid = PRIOR ID;  
+ 这个查找的是ID为819459的节点下的所有直属子类节点，包括子辈的和孙子辈的所有直属节点。
+
+4.查找一个节点的直属父节点（父亲）。 如果查找的是节点的直属父节点，也是不用用到树型查询的。
+Sql代码
+ SELECT b.* FROM flfl a JOIN flfl b ON a.sjflid = b.ID WHERE a.ID = 6758;  
+ 这个找到的是ID为6758的节点的直属父节点，要用到同一张表的关联了。
+
+5.查找一个节点的所有直属父节点（祖宗）。
+Sql代码
+SELECT * FROM flfl START WITH ID = 6758 CONNECT BY PRIOR sjflid = ID;  
+ 这里查找的就是ID为6758的所有直属父节点，打个比方就是找到一个人的父亲、祖父等。但是值得注意的是这个查询出来的结果的顺序是先列出子类节点再列出父类节点，姑且认为是个倒序吧。
+
+      上面列出两个树型查询方式，第3条语句和第5条语句，这两条语句之间的区别在于prior关键字的位置不同，所以决定了查询的方式不同。 当sjflid = PRIOR ID时，数据库会根据当前的ID迭代出sjflid与该ID相同的记录，所以查询的结果是迭代出了所有的子类记录；而PRIOR ID = sjflid时，数据库会跟据当前的sjflid来迭代出与当前的sjflid相同的id的记录，所以查询出来的结果就是所有的父类结果。
+
+以下是一系列针对树结构的更深层次的查询，这里的查询不一定是最优的查询方式，或许只是其中的一种实现而已。
+
+6.查询一个节点的兄弟节点（亲兄弟）。
+Sql代码
+ SELECT a.*   
+ FROM flfl a   
+ WHERE EXISTS (SELECT *   
+ FROM flfl b   
+WHERE a.sjflid = b.sjflid AND b.ID = 6757);  
+
+这里查询的就是与ID为6757的节点同属一个父节点的节点了，就好比亲兄弟了。
+
+7.查询与一个节点同级的节点（族兄弟）。 如果在表中设置了级别的字段，上表中的FLJB，那么在做这类查询时会很轻松，同一级别的就是与那个节点同级的，在这里列出不使用该字段时的实现!
+Sql代码
+1.     WITH tmp AS  
+ (SELECT      a.*, LEVEL lev   
+FROM flfl a   
+START WITH a.sjflid IS NULL  
+CONNECT BY a.sjflid = PRIOR a.ID)   
+
+SELECT *   
+FROM tmp   
+WHERE lev = (SELECT lev   
+FROM tmp   
+WHERE ID = 819394)  
+这里使用两个技巧，一个是使用了LEVEL来标识每个节点在表中的级别，还有就是使用with语法模拟出了一张带有级别的临时表。
+
+8.查询一个节点的父节点的的兄弟节点（伯父与叔父）。
+Sql代码
+  WITH tmp AS  
+(SELECT      flfl.*, LEVEL lev   
+ FROM flfl   
+START WITH sjflid IS NULL  
+ CONNECT BY sjflid = PRIOR ID)   
+SELECT b.*   
+FROM tmp b,   
+(SELECT *   
+FROM tmp   
+WHERE ID = 7004 AND lev = 2) a   
+WHERE b.lev = 1   
+
+UNION ALL  
+SELECT *   
+FROM tmp   
+WHERE sjflid = (SELECT DISTINCT x.ID   
+FROM tmp x,   tmp y,   
+
+(SELECT *   
+ FROM tmp   
+WHERE ID = 7004 AND lev > 2) z   
+WHERE y.ID = z.sjflid AND x.ID = y.sjflid);  
+       这里查询分成以下几步。首先，将第7个一样，将全表都使用临时表加上级别；其次，根据级别来判断有几种类型，以上文中举的例子来说，有三种情况：（1）当前节点为顶级节点，即查询出来的lev值为1，那么它没有上级节点，不予考虑。（2）当前节点为2级节点，查询出来的lev值为2，那么就只要保证lev级别为1的就是其上级节点的兄弟节点。（3）其它情况就是3以及以上级别，那么就要选查询出来其上级的上级节点（祖父），再来判断祖父的下级节点都是属于该节点的上级节点的兄弟节点。 最后，就是使用UNION将查询出来的结果进行结合起来，形成结果集。
+
+9.查询一个节点的父节点的同级节点（族叔）。
+这个其实跟第7种情况是相同的。
+Sql代码
+WITH tmp AS  
+(SELECT      a.*, LEVEL lev   
+FROM flfl a   
+START WITH a.sjflid IS NULL  
+CONNECT BY a.sjflid = PRIOR a.ID)   
+
+SELECT *   
+FROM tmp   
+ WHERE lev = (SELECT lev   
+FROM tmp   
+WHERE ID = 819394) - 1  
+      只需要做个级别判断就成了。
+      基本上，常见的查询在里面了，不常见的也有部分了。其中，查询的内容都是节点的基本信息，都是数据表中的基本字段，但是在树查询中还有些特殊需求，是对查询数据进行了处理的，常见的包括列出树路径等。
+      补充一个概念，对于数据库来说，根节点并不一定是在数据库中设计的顶级节点，对于数据库来说，根节点就是start with开始的地方。
+
+下面列出的是一些与树相关的特殊需求。
+10.名称要列出名称全部路径。
+      这里常见的有两种情况，一种是是从顶级列出，直到当前节点的名称（或者其它属性）；一种是从当前节点列出，直到顶级节点的名称（或其它属性）。举地址为例：国内的习惯是从省开始、到市、到县、到居委会的，而国外的习惯正好相反（老师说的，还没接过国外的邮件，谁能寄个瞅瞅 ）。
+
+从顶部开始：
+Sql代码
+SELECT      SYS_CONNECT_BY_PATH (mc, '/')   
+FROM flfl   
+ WHERE ID = 6498   
+ START WITH sjflid IS NULL  
+CONNECT BY sjflid = PRIOR ID;  
+
+从当前节点开始：
+Sql代码
+SELECT      SYS_CONNECT_BY_PATH (mc, '/')   
+FROM flfl   
+START WITH ID = 6498   
+CONNECT BY PRIOR sjflid = ID;  
+      在这里我又不得不放个牢骚了。oracle只提供了一个sys_connect_by_path函数，却忘了字符串的连接的顺序。在上面的例子中，第一个SQL是从根节点开始遍历，而第二个SQL是直接找到当前节点，从效率上来说已经是千差万别，更关键的是第一个SQL只能选择一个节点，而第二个SQL却是遍历出了一颗树来。再次PS一下。
+      sys_connect_by_path函数就是从start with开始的地方开始遍历，并记下其遍历到的节点，start with开始的地方被视为根节点，将遍历到的路径根据函数中的分隔符，组成一个新的字符串，这个功能还是很强大的。
+
+11.列出当前节点的根节点。
+在前面说过，根节点就是start with开始的地方。
+Sql代码
+SELECT      CONNECT_BY_ROOT mc, flfl.*   
+FROM flfl   
+START WITH ID = 6498   
+CONNECT BY PRIOR sjflid = ID;  
+connect_by_root函数用来列的前面，记录的是当前节点的根节点的内容。
+
+12.列出当前节点是否为叶子。
+ 这个比较常见，尤其在动态目录中，在查出的内容是否还有下级节点时，这个函数是很适用的。
+Sql代码
+ SELECT      CONNECT_BY_ISLEAF, flfl.*   
+FROM flfl   
+START WITH sjflid IS NULL  
+CONNECT BY sjflid = PRIOR ID;  
+      connect_by_isleaf函数用来判断当前节点是否包含下级节点，如果包含的话，说明不是叶子节点，这里返回0；反之，如果不包含下级节点，这里返回1。

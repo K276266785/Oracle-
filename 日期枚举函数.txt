@@ -1,3 +1,23 @@
+--截取年月天
+select extract(year from date'2013-11-30') year from dual;
+select extract(month from date'2013-11-30') month from dual;
+select extract(day from date'2013-11-30') day from dual;
+--截取时分秒时区
+select extract(minute from systimestamp)minute from dual;
+select extract(second from systimestamp)second from dual;
+select extract(timezone_hour from systimestamp) th from dual;
+select extract(timezone_minute from systimestamp) tm from dual;
+select extract(timezone_region from systimestamp) tr from dual;
+select extract(timezone_abbr from systimestamp) ta from dual;
+--两日期间隔(天、小时、分，秒）
+select extract(day from dt2 - dt1) day,
+       extract(hour from dt2 - dt1) hour,
+       extract(minute from dt2 - dt1) minute,
+       extract(second from dt2 - dt1) second
+  from (select to_timestamp('2020-02-04 15:07:00', 'yyyy-mm-dd hh24:mi:ss') dt1,
+               to_timestamp('2020-11-30 22:08:46', 'yyyy-mm-dd hh24:mi:ss') dt2
+          from dual);
+
 --动态sql日期变量
 v_sql := 'SELECT COUNT(*) FROM USER_OBJECTS WHERE CREATED<='||chr(39)||v_date||chr(39);
 
@@ -29,7 +49,7 @@ SELECT ROWNUM AS tc_month_id,
        tc_month FROM
 (SELECT tc_month FROM
 (
-SELECT DISTINCT f_get_year_and_month(to_date('2007-11-10' , 'yyyy-mm-dd')+LEVEL-1) AS tc_month 
+SELECT DISTINCT to_char((to_date('2007-11-10' , 'yyyy-mm-dd')+LEVEL-1),'yyyymm') AS tc_month 
 FROM DUAL 
 CONNECT BY LEVEL <= 
 TRUNC(TO_DATE('2008-04-30', 'yyyy-mm-dd') - 
@@ -92,3 +112,5 @@ select add_months(trunc(sysdate, 'Q'), 3) - 1 from dual;
 --本年
 select trunc(sysdate, 'yyyy') from dual;
 select add_months(trunc(sysdate, 'yyyy'), 12) - 1 from dual;
+
+CREATED<='||chr(39)||v_date||chr(39);

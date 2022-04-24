@@ -1,0 +1,96 @@
+--------------------------------------------------------------
+create or replace type bietl.string_sum_obj as object(
+ --聚合函数的实质就是一个对象
+ sum_string varchar2(4000),
+ static function ODCIAggregateInitialize(v_self in out string_sum_obj) return number,
+ --对象初始化
+ member function ODCIAggregateIterate(self in out string_sum_obj, value in varchar2) return number,
+ --聚合函数的迭代方法(这是最重要的方法)
+ member function ODCIAggregateMerge(self in out string_sum_obj, v_next in string_sum_obj) return number,
+ --当查询语句并行运行时,才会使用该方法,可将多个并行运行的查询结果聚合
+ member function ODCIAggregateTerminate(self in string_sum_obj, return_value out varchar2 ,v_flags in number) return number
+ --终止聚集函数的处理,返回聚集函数处理的结果.
+)
+--------------------------------------------------------------
+
+--------------------------------------------------------------
+create or replace type body bietl.string_sum_obj is
+  static function ODCIAggregateInitialize(v_self in out string_sum_obj)
+    return number is
+  begin
+    v_self := string_sum_obj(null);
+    return ODCICONST.Success;
+  end;
+  
+  member function ODCIAggregateIterate(self  in out string_sum_obj,
+                                       value in varchar2) return number is
+    v_count number;                                       
+  begin
+    /* 连接，解决逗号分隔第一个字母是逗号的问题 */
+    if not self.sum_string is null then
+      --注：原方法
+      --self.sum_string := self.sum_string || ',' || value;
+      
+      --注：变更后方法 （修改人：Ken.Li 2021-03-16)
+      --解决重复值问题
+      ---------------------------------------
+      --判断是否有包含,不包含才连接
+      select count(1)
+        into v_count
+        from table(f_str_split(self.sum_string, ',')) t1
+        join table(f_str_split(value, ',')) t2
+          on t1.column_value = t2.column_value;
+
+      if v_count=0 then
+        self.sum_string := self.sum_string || ',' || value;
+      end if;
+      ---------------------------------------
+    else
+      self.sum_string := self.sum_string || value;
+    end if;
+    return ODCICONST.Success;
+    /* 最大值 */
+    if self.sum_string < value then
+      self.sum_string := value;
+    end if;
+    /* 最小值 */
+    if self.sum_string > value then
+      self.sum_string := value;
+    end if;
+    return ODCICONST.Success;
+  end;
+  
+  member function ODCIAggregateMerge(self   in out string_sum_obj,
+                                     v_next in string_sum_obj) return number is
+  begin
+    /* 连接 */
+    self.sum_string := self.sum_string || v_next.sum_string;
+    
+    return ODCICONST.Success;
+    /* 最大值 */
+    if self.sum_string < v_next.sum_string then
+      self.sum_string := v_next.sum_string;
+    end if;
+    /* 最小值 */
+    if self.sum_string > v_next.sum_string then
+      self.sum_string := v_next.sum_string;
+    end if;
+    return ODCICONST.Success;
+  end;
+  
+  member function ODCIAggregateTerminate(self         in string_sum_obj,
+                                         return_value out varchar2,
+                                         v_flags      in number)
+    return number is
+  begin
+    return_value := self.sum_string;
+    return ODCICONST.Success;
+  end;
+end;
+--------------------------------------------------------------
+
+--------------------------------------------------------------
+create or replace function bietl.wm_concat(value Varchar2) return Varchar2
+  parallel_enable
+  aggregate using string_sum_obj;
+--------------------------------------------------------------

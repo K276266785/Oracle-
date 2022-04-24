@@ -1,0 +1,52 @@
+create table tmp_budget_major_item(tc_code varchar2(100),
+       tc_name varchar2(100),
+       tc_map varchar2(100),
+       tc_order number);
+       
+create table tmp_budget_minor_item(tc_code varchar2(100),
+       tc_name varchar2(100),
+       tc_order number);
+       
+create table tmp_budget_item_map(tc_major_item_code varchar2(100),
+       tc_minor_item_code varchar2(100));     
+
+
+create or replace view v_budget_item_map  as
+with tmp_budget_major_item_chg as
+ (select regexp_substr(t.tc_map, '[^,]+', 1, l) as tc_code,
+         tc_code as tc_parent
+    from tmp_budget_major_item t,
+         (select level l from dual connect by level <= 1000)
+   where t.tc_map is not null
+     and l(+) <= length(t.tc_map) - length(replace(t.tc_map, ',')) + 1),
+
+tmp_budget_major_item_result as
+(select substr(tc_value,instr(tc_value,'/',1)+1,instr(tc_value,'/',2+1)-instr(tc_value,'/',1)-1) as tc_code,
+       tc_code as tc_join_code from
+(
+select t.*,
+       SYS_CONNECT_BY_PATH(t.tc_parent,'/')||'/' as tc_value
+  from tmp_budget_major_item_chg t
+ where CONNECT_BY_ISLEAF<>0
+connect by PRIOR t.tc_code = t.tc_parent
+) t
+union all
+select tc_code,
+       tc_code as tc_join_code
+  from tmp_budget_major_item
+ where tc_map is null)
+
+select t3.tc_code as major_code,
+       t3.tc_name as major_name,
+       t4.tc_code as minor_code,
+       t4.tc_name as minor_name,
+       t3.tc_order as major_order,
+       t4.tc_order as minor_order
+  from tmp_budget_item_map t1
+  join tmp_budget_major_item_result t2
+    on t1.tc_major_item_code = t2.tc_join_code
+  join tmp_budget_major_item t3
+    on t2.tc_code = t3.tc_code
+  join tmp_budget_minor_item t4
+    on t1.tc_minor_item_code = t4.tc_code
+ order by t3.tc_code, t4.tc_code, t3.tc_order, t4.tc_order

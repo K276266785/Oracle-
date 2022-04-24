@@ -1,0 +1,40 @@
+--查询临时表空间使用率
+select c.tablespace_name,
+       to_char(c.bytes / 1024 / 1024 / 1024, '99,999.999') total_gb,
+       to_char((c.bytes - d.bytes_used) / 1024 / 1024 / 1024, '99,999.999') free_gb,
+       to_char(d.bytes_used / 1024 / 1024 / 1024, '99,999.999') use_gb,
+       to_char(d.bytes_used * 100 / c.bytes, '99.99') || '%' use
+  from (select tablespace_name, sum(bytes) bytes
+          from dba_temp_files
+         GROUP by tablespace_name) c,
+       (select tablespace_name, sum(bytes_cached) bytes_used
+          from v$temp_extent_pool
+         GROUP by tablespace_name) d
+ where c.tablespace_name = d.tablespace_name;
+
+--查看正在使用临时表空间的SQL
+select sess.SID, segtype, blocks * 8 / 1000 "MB", sql_text
+  from v$sort_usage sort, v$session sess, v$sql sql
+ where sort.SESSION_ADDR = sess.SADDR
+   and sql.ADDRESS = sess.SQL_ADDRESS
+ order by blocks desc; 
+
+--查看临时表空间文件目录和大小
+select tablespace_name,file_name,bytes/1024/1024 file_size,autoextensible from dba_temp_files;
+
+
+--找出数据库中消耗资源比较大的sql语句
+Select se.username,
+       se.sid,
+       su.extents,
+       su.blocks * to_number(rtrim(p.value)) as Space,
+       tablespace,
+       segtype,
+       sql_text
+  from v$sort_usage su, v$parameter p, v$session se, v$sql s
+ where p.name = 'db_block_size'
+   and su.session_addr = se.saddr
+   and s.hash_value = su.sqlhash
+   and s.address = su.sqladdr
+ order by se.username, se.sid
+

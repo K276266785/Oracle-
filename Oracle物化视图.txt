@@ -88,4 +88,11 @@ begin
  dbms_scheduler.run_job('refresh_pos_sale_for_month_job',TRUE); -- true代表同步执行
 end;
 
+--更新job调度时间
+begin
+  DBMS_SCHEDULER.SET_ATTRIBUTE(name      => 'AUTO_UPD_TAKE_FOOD',
+                               attribute => 'repeat_interval',
+                               value     => 'FREQ=DAILY;BYHOUR=15;BYMINUTE=01;BYSECOND=0');
+end;
+
 raise_application_error(-20000,v_count);

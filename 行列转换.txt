@@ -60,7 +60,7 @@ create table tmp_kai_test1(
 
 select rowid,t.* from tmp_kai_test1 t
 
-
+--method1
 with tb2 as
  (select rownum rn
     from (select max(abs(tc_qty)) as maxlevel from tmp_kai_test1)
@@ -71,3 +71,10 @@ select tb1.tc_code, 1*sign(tb1.tc_qty) as tc_new_qty
  where abs(tb1.tc_qty) >= rn
    and tb1.tc_qty<>0
  order by tb1.tc_code;
+
+--method2
+select tc_code, 1 * sign(tc_qty) as tc_new_qty
+  from tmp_kai_test1
+connect by tc_code = prior tc_code
+       and level <= abs(tc_qty)
+       and prior dbms_random.value is not null;

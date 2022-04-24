@@ -1,0 +1,16 @@
+SELECT distinct 'alter system disconnect session '''||SID||','||SERIAL#||',@'||s.INST_ID||''';'
+                FROM gv$session S
+               WHERE S.USERNAME IS NOT NULL
+                 AND UPPER(S.PROGRAM) IN ('JDBC THIN CLIENT')
+                 AND S.LAST_CALL_ET >= 2 * 60 * 60
+                 AND S.STATUS = 'KILLED'  ;
+
+
+SELECT distinct 'alter system disconnect session '''||SID||','||SERIAL#||',@'||s.INST_ID||''';'
+                FROM gv$session S
+               WHERE S.USERNAME IS NOT NULL
+                 AND UPPER(S.PROGRAM) IN ('JDBC THIN CLIENT')
+                 AND S.logon_time <= trunc(sysdate)
+                 AND S.STATUS = 'INACTIVE'  ;
+
+select count(*) from v$process ; 

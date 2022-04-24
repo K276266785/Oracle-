@@ -2,6 +2,7 @@ select * from user_sys_privs where privilege like upper('%DATABASE LINK%');
 
 select * from dba_db_links;
 
+--方式1：SERVICE_NAME
 create database link ray2_link
 connect to ray2 identified by "ray2"
 using '(DESCRIPTION =
@@ -10,6 +11,19 @@ using '(DESCRIPTION =
     )
     (CONNECT_DATA =
       (SERVICE_NAME = orcl)
+    )
+)';
+
+--方式2：SID
+create database link PRO_IPOS_SID
+  connect to BIDBUSR01 identified by "bigDATA#123"
+  using '(DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = pos-scan.mo-co.org)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = POS1)
+    (SERVER = DEDICATED)  
     )
 )';
 

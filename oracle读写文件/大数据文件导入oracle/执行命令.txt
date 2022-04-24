@@ -1,0 +1,6 @@
+--参考文档
+https://www.jb51.net/database/577355.html
+https://www.cnblogs.com/joechinochl/articles/12484802.html
+
+cd C:\kai\e\apps\Oracle\Instant Client\bin
+sqlldr userid=bietl/Bi#db2019@10.12.153.31:1521/bi control='C:\kai\e\bak\常用SQL\Oracle学习资料\oracle读写文件\大数据文件导入oracle\control.ctl' log='C:\kai\e\bak\常用SQL\Oracle学习资料\oracle读写文件\大数据文件导入oracle\test.log' skip=1 rows=1000

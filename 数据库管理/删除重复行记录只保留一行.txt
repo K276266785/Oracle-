@@ -1,0 +1,16 @@
+--chk
+select *
+  from stg_hr_employee_0a_bak
+ where tc_code in (select tc_code
+                     from stg_hr_employee_0a_bak
+                   having count(1) > 1
+                    group by tc_code);
+--del
+delete from stg_hr_employee_0a t1
+ where rowid in (select max(rowid)
+                   from stg_hr_employee_0a
+                  where tc_code in (select tc_code
+                                      from stg_hr_employee_0a
+                                    having count(1) > 1
+                                     group by tc_code)
+                  group by tc_code);

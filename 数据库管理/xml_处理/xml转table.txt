@@ -1,0 +1,35 @@
+--demo1
+SELECT * FROM XMLTABLE('$B/DEAL_BASIC/USER_DEAL_INFO' PASSING
+    XMLTYPE('<?xml version="1.0" encoding="gb2312" ?>
+              <DEAL_BASIC>
+                 <USER_DEAL_INFO>
+                     <USER_DEAL_ID>1000100001</USER_DEAL_ID>
+                     <DEAL_INURE_TIME>20081130</DEAL_INURE_TIME>
+                     <DEAL_EXPIRE_TIME>30000101</DEAL_EXPIRE_TIME>
+                     <DEAL_CREATE_TIME>20081130</DEAL_CREATE_TIME>
+                 </USER_DEAL_INFO>
+                 <USER_DEAL_INFO>
+                     <USER_DEAL_ID>1000100002</USER_DEAL_ID>
+                     <DEAL_INURE_TIME>20081131</DEAL_INURE_TIME>
+                     <DEAL_EXPIRE_TIME>30000102</DEAL_EXPIRE_TIME>
+                     <DEAL_CREATE_TIME>20081131</DEAL_CREATE_TIME>
+                 </USER_DEAL_INFO>
+              </DEAL_BASIC>') AS B
+    COLUMNS USER_DEAL_ID VARCHAR2(50) PATH
+    '/USER_DEAL_INFO/USER_DEAL_ID',
+    DEAL_INURE_TIME VARCHAR2(50) PATH
+    '/USER_DEAL_INFO/DEAL_INURE_TIME',
+    DEAL_EXPIRE_TIME VARCHAR2(50) PATH
+    '/USER_DEAL_INFO/DEAL_EXPIRE_TIME',
+    DEAL_CREATE_TIME VARCHAR2(50) PATH
+    '/USER_DEAL_INFO/DEAL_CREATE_TIME')
+
+
+--demo2取节点属性
+SELECT *
+  FROM XMLTABLE('$B/Permissions/Permission/@role' PASSING XMLTYPE('<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Permissions inherited="false" user="ADMIN" version="1.0"><Permission descend="FOLDER_FILE" group="I8a8c18ed016c6bf56bf57187016cadb5a9c13458" perm="READ"/><Permission descend="FOLDER_FILE" group="华东分公司" group_descend="false" perm="READ"/><Permission descend="FOLDER_FILE" group="华北分公司" group_descend="false" perm="READ"/><Permission descend="FOLDER_FILE" group="华南分公司" group_descend="false" perm="READ"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ed016fa8eca8ecf1650170660425ed00e3"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c88d5b377374b"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea0198017057b72f40011c"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c84c949172682"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c84c82eb92675"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c84c8a512267c"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c84c86eea2678"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c84c8f980267f"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c84c790072671"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea0198017057114cbf6e5d"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea01980170570c30366d8a"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea01980170575d3e857966"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c88d582ac3748"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea01980170571602316f6b"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea01980170571d1f727092"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea019801705732bac874ab"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ed016f7fc67fc63078016fa712de1c21d3"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea01980170575c4a3d7952"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea0198017057b353ed00cc"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016c6bf66bf6b4ba016c88d63de4374e"/><Permission descend="FOLDER_FILE" perm="READ" user="1181822"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee016fa8eaa8ea01980170576f184c7b33"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee017328e328e3cf67017399203b752878"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee017328e328e3cf6701739920763b287b"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee017328e328e3cf6701739920ba1e287f"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ee017328e328e3cf6701739920f22b2882"/><Permission descend="FOLDER_FILE" perm="READ" role="I8a8c18ed0173fb20fb207c630174bf7894e579c8"/></Permissions>
+') as B COLUMNS tc_id VARCHAR2(100) PATH '.')
+
+--存储过程解释xml
+http://www.blogjava.net/botson/archive/2008/03/19/187360.html

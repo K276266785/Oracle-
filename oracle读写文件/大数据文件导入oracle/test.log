@@ -1,0 +1,9 @@
+
+SQL*Loader: Release 19.0.0.0.0 - Production on 星期四 4月 14 18:52:28 2022
+Version 19.13.0.0.0
+
+Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
+
+SQL*Loader-500:  无法打开文件 (C:\kai\e\bak\甯哥敤SQL\Oracle瀛︿範璧勬枡\oracle璇诲啓鏂囦欢\澶ф暟鎹枃浠跺鍏racle\test.txt)
+SQL*Loader-553:  未找到文件
+SQL*Loader-509:  系统错误: 系统找不到指定的文件。
